@@ -141,14 +141,35 @@ function goTo(i, opts = {}) {
   updateNotes();
   updateGridActive();
   updateQR();
+  // Reset timeline ao entrar
+  if (slides[current].dataset.type === 'timeline') {
+    slides[current].dataset.activeStop = '0';
+    // espera o layout pintar pra calcular offsets corretos
+    requestAnimationFrame(() => updateTimeline(slides[current]));
+  }
   // Re-highlight code on slide enter (Prism)
   if (window.Prism) Prism.highlightAllUnder(slides[current]);
   // Reset slide numbers chrome
   setSlideChrome();
 }
 
+// Recentraliza o timeline quando a janela muda de tamanho
+window.addEventListener('resize', () => {
+  const slide = slides[current];
+  if (slide && slide.dataset.type === 'timeline') updateTimeline(slide);
+});
+
 function next() {
   const slide = slides[current];
+  if (slide.dataset.type === 'timeline') {
+    const stops = slide.querySelectorAll('.timeline-stop');
+    const active = parseInt(slide.dataset.activeStop || '0', 10);
+    if (active < stops.length - 1) {
+      slide.dataset.activeStop = active + 1;
+      updateTimeline(slide);
+      return;
+    }
+  }
   if (slide.dataset.reveal === 'true') {
     const bullets = slide.querySelectorAll('.bullets li');
     if (revealedBullets < bullets.length) {
@@ -160,7 +181,43 @@ function next() {
   goTo(current + 1);
 }
 
-function prev() { goTo(current - 1); }
+function prev() {
+  const slide = slides[current];
+  if (slide.dataset.type === 'timeline') {
+    const active = parseInt(slide.dataset.activeStop || '0', 10);
+    if (active > 0) {
+      slide.dataset.activeStop = active - 1;
+      updateTimeline(slide);
+      return;
+    }
+  }
+  goTo(current - 1);
+}
+
+function updateTimeline(slide) {
+  const stops = slide.querySelectorAll('.timeline-stop');
+  const dots = slide.querySelectorAll('.timeline-dot');
+  const track = slide.querySelector('.timeline-track');
+  const counter = slide.querySelector('.timeline-counter .cur-stop');
+  const active = parseInt(slide.dataset.activeStop || '0', 10);
+
+  stops.forEach((s, i) => {
+    s.classList.toggle('active', i === active);
+    s.classList.toggle('passed', i < active);
+  });
+  dots.forEach((d, i) => {
+    d.classList.toggle('active', i === active);
+    d.classList.toggle('passed', i < active);
+  });
+  if (counter) counter.textContent = String(active + 1).padStart(2, '0');
+
+  if (!track || !stops[active]) return;
+  const viewport = track.parentElement;
+  const stop = stops[active];
+  const stopCenter = stop.offsetLeft + stop.offsetWidth / 2;
+  const offset = (viewport.offsetWidth / 2) - stopCenter;
+  track.style.transform = `translateX(${offset}px)`;
+}
 
 function applyReveal() {
   const slide = slides[current];
