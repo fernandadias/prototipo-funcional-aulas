@@ -1,0 +1,1553 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Protótipo Funcional — Template de Aula</title>
+<meta name="theme-color" content="#1c1c1c">
+<meta name="color-scheme" content="dark">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800;900&family=Kode+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-tomorrow.min.css">
+
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --bg:#1c1c1c; --bg-soft:#1d1d1d; --bg-card:#242424; --bg-elev:#2e2e2e;
+    --border:#2e2e2e; --border-light:#383838;
+    --text:#f0e7da; --text-cream:#e9e0d1; --text-dim:#ccbd9f; --text-mute:#635d54;
+    --accent:#D4F542; --accent-bright:#DFFA5C; --accent-dim:#B8D930;
+    --radius:12px; --radius-sm:6px;
+  }
+  html,body{background:var(--bg);color:var(--text);font-family:'Geist','Inter',-apple-system,sans-serif;font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased;height:100%;overflow:hidden}
+  body{cursor:default}
+  button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+  img,svg{display:block;max-width:100%}
+  a{color:var(--accent);text-decoration:none;border-bottom:1px dashed currentColor}
+  a:hover{color:var(--accent-bright)}
+  :focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:4px}
+
+  /* Tipografia base */
+  .mono{font-family:'Kode Mono',monospace;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-dim)}
+  .eyebrow{display:inline-flex;align-items:center;gap:8px;font-family:'Kode Mono',monospace;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-dim);padding:6px 12px;border:1px solid var(--border-light);border-radius:999px;background:var(--bg-soft)}
+  .eyebrow::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 0 rgba(212,245,66,0.55);animation:dotPulse 2s cubic-bezier(.4,0,.6,1) infinite}
+  @keyframes dotPulse{0%{box-shadow:0 0 0 0 rgba(212,245,66,0.55)}70%{box-shadow:0 0 0 8px rgba(212,245,66,0)}100%{box-shadow:0 0 0 0 rgba(212,245,66,0)}}
+  .accent{color:var(--accent)}
+
+  /* Deck container — formato 16:9 */
+  #deck{position:fixed;inset:0;overflow:hidden}
+  .slide{position:absolute;inset:0;padding:80px 96px;display:none;flex-direction:column;justify-content:center;background:var(--bg);overflow:hidden}
+  .slide.active{display:flex;animation:slideIn .35s cubic-bezier(.22,.61,.36,1)}
+  @keyframes slideIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+  /* Background texture sutil só nas capas */
+  .slide[data-type="cover"]::before,.slide[data-type="quote"]::before{
+    content:'';position:absolute;inset:0;
+    background:radial-gradient(ellipse 60% 50% at 50% 0%,rgba(212,245,66,0.08),transparent 70%);
+    pointer-events:none
+  }
+  .slide-num{position:absolute;bottom:32px;right:48px;font-family:'Kode Mono',monospace;font-size:11px;color:var(--text-mute);letter-spacing:0.14em}
+  .slide-brand{position:absolute;bottom:32px;left:48px;font-family:'Kode Mono',monospace;font-size:11px;color:var(--text-mute);letter-spacing:0.14em;text-transform:uppercase}
+
+  /* TIPO: capa */
+  .slide[data-type="cover"]{align-items:center;text-align:center;justify-content:center}
+  .slide[data-type="cover"] .eyebrow{margin-bottom:32px}
+  .slide[data-type="cover"] h1{font-size:clamp(48px,7vw,96px);font-weight:900;letter-spacing:-0.035em;line-height:1.02;max-width:1100px;margin-bottom:24px}
+  .slide[data-type="cover"] .lead{font-size:22px;color:var(--text-dim);max-width:680px;line-height:1.45}
+  .slide[data-type="cover"] .module-tag{margin-top:48px;font-family:'Kode Mono',monospace;font-size:13px;color:var(--text-mute);letter-spacing:0.14em;text-transform:uppercase}
+
+  /* TIPO: bullets / conteúdo */
+  .slide-header{margin-bottom:48px}
+  .slide-header .eyebrow{margin-bottom:18px}
+  .slide-header h2{font-size:clamp(36px,4.5vw,56px);font-weight:700;letter-spacing:-0.03em;line-height:1.08;max-width:1100px}
+  .slide-header p.subtitle{margin-top:14px;color:var(--text-dim);font-size:18px;max-width:760px}
+  .bullets{list-style:none;display:flex;flex-direction:column;gap:20px;max-width:980px}
+  .bullets li{font-size:24px;line-height:1.4;color:var(--text);padding-left:36px;position:relative;opacity:.25;transition:opacity .4s ease,transform .4s ease;transform:translateY(4px)}
+  .bullets li.revealed{opacity:1;transform:translateY(0)}
+  .bullets li::before{content:'';position:absolute;left:0;top:14px;width:14px;height:2px;background:var(--accent)}
+  .bullets li strong{color:var(--accent);font-weight:600}
+
+  /* TIPO: código */
+  .slide[data-type="code"] pre{margin:0;background:var(--bg-card)!important;border:1px solid var(--border);border-radius:var(--radius);padding:28px 32px;font-family:'Kode Mono',monospace;font-size:16px;line-height:1.6;overflow:auto;max-height:60vh}
+  .slide[data-type="code"] code{font-family:'Kode Mono',monospace!important}
+  .code-toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+  .code-toolbar .filename{font-family:'Kode Mono',monospace;font-size:12px;color:var(--text-dim);letter-spacing:0.06em}
+  .code-toolbar .btn-edit{padding:6px 14px;border:1px solid var(--border-light);border-radius:999px;font-family:'Kode Mono',monospace;font-size:11px;color:var(--text-dim);letter-spacing:0.08em;text-transform:uppercase;transition:all .2s}
+  .code-toolbar .btn-edit:hover{border-color:var(--accent);color:var(--accent)}
+  .code-toolbar .btn-edit.editing{background:var(--accent);color:#1c1c1c;border-color:var(--accent)}
+  pre.editable{outline:2px solid var(--accent);outline-offset:-2px}
+
+  /* TIPO: demo embedada */
+  .slide[data-type="demo"] .demo-frame{flex:1;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;display:flex;align-items:center;justify-content:center;position:relative;min-height:0}
+  .slide[data-type="demo"] .demo-frame iframe{width:100%;height:100%;border:0}
+  .demo-placeholder{color:var(--text-mute);font-family:'Kode Mono',monospace;font-size:13px;letter-spacing:0.1em;text-transform:uppercase;text-align:center;padding:32px}
+  .demo-placeholder span{display:block;margin-top:12px;color:var(--text-dim);text-transform:none;letter-spacing:0;font-family:'Geist';font-size:14px}
+
+  /* TIPO: compare lado a lado */
+  .compare{display:grid;grid-template-columns:1fr 1fr;gap:24px;flex:1;min-height:0}
+  .compare-side{padding:32px;border-radius:var(--radius);border:1px solid var(--border);background:var(--bg-card);display:flex;flex-direction:column;gap:16px;overflow:auto}
+  .compare-side.bad{border-color:#3a2222;background:#221818}
+  .compare-side.good{border-color:#2a3a1a;background:linear-gradient(180deg,rgba(212,245,66,0.04),var(--bg-card))}
+  .compare-side h3{font-size:20px;font-weight:600;letter-spacing:-0.01em}
+  .compare-side .tag{display:inline-flex;align-items:center;gap:6px;font-family:'Kode Mono',monospace;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-mute);width:fit-content}
+  .compare-side.bad .tag{color:#c97070}
+  .compare-side.good .tag{color:var(--accent)}
+  .compare-side p{color:var(--text-dim);font-size:15px;line-height:1.55}
+
+  /* TIPO: quote */
+  .slide[data-type="quote"]{align-items:center;text-align:center;justify-content:center}
+  .slide[data-type="quote"] blockquote{font-size:clamp(36px,4.5vw,64px);font-weight:600;letter-spacing:-0.025em;line-height:1.15;max-width:1100px;color:var(--text)}
+  .slide[data-type="quote"] blockquote::before{content:'"';color:var(--accent);margin-right:8px}
+  .slide[data-type="quote"] blockquote::after{content:'"';color:var(--accent);margin-left:4px}
+  .slide[data-type="quote"] cite{display:block;margin-top:32px;font-family:'Kode Mono',monospace;font-size:13px;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-dim);font-style:normal}
+
+  /* TIPO: agenda */
+  .agenda{display:flex;flex-direction:column;gap:1px;background:var(--border);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;max-width:880px}
+  .agenda-item{background:var(--bg-card);padding:20px 28px;display:flex;align-items:center;gap:20px;transition:background .2s}
+  .agenda-item.current{background:linear-gradient(90deg,rgba(212,245,66,0.08),transparent)}
+  .agenda-item.done{opacity:.4}
+  .agenda-num{font-family:'Kode Mono',monospace;font-size:13px;color:var(--text-mute);letter-spacing:0.1em;min-width:42px}
+  .agenda-item.current .agenda-num{color:var(--accent)}
+  .agenda-title{font-size:18px;flex:1}
+  .agenda-item.current .agenda-title{font-weight:600}
+  .agenda-status{font-family:'Kode Mono',monospace;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent);padding:4px 10px;border:1px solid var(--accent);border-radius:999px}
+  .agenda-item:not(.current) .agenda-status{display:none}
+
+  /* TIPO: imagem inteira */
+  .slide[data-type="image"]{padding:0}
+  .slide[data-type="image"] img{width:100%;height:100%;object-fit:contain;background:#000}
+  .slide[data-type="image"].cover img{object-fit:cover}
+  .image-caption{position:absolute;bottom:24px;left:50%;transform:translateX(-50%);background:rgba(28,28,28,0.85);backdrop-filter:blur(8px);padding:10px 20px;border-radius:999px;font-family:'Kode Mono',monospace;font-size:12px;letter-spacing:0.1em;color:var(--text-dim)}
+
+  /* TIPO: vídeo */
+  .slide[data-type="video"]{padding:0}
+  .slide[data-type="video"] video,.slide[data-type="video"] iframe{width:100%;height:100%;border:0;background:#000;object-fit:contain}
+
+  /* TIPO: gráfico (barras CSS, sem dep) */
+  .chart-wrap{display:flex;flex-direction:column;gap:24px;max-width:900px;width:100%}
+  .chart-row{display:grid;grid-template-columns:160px 1fr 80px;gap:20px;align-items:center}
+  .chart-label{font-family:'Kode Mono',monospace;font-size:13px;color:var(--text-dim);letter-spacing:0.06em;text-transform:uppercase}
+  .chart-bar{height:32px;background:var(--bg-card);border:1px solid var(--border);border-radius:6px;overflow:hidden;position:relative}
+  .chart-fill{height:100%;background:linear-gradient(90deg,var(--accent-dim),var(--accent));border-radius:6px 0 0 6px;animation:barGrow 1s cubic-bezier(.22,.61,.36,1)}
+  @keyframes barGrow{from{width:0!important}}
+  .chart-value{font-size:24px;font-weight:700;letter-spacing:-0.02em;text-align:right}
+
+  /* TIPO: link */
+  .links-list{display:flex;flex-direction:column;gap:16px;max-width:880px}
+  .link-card{display:flex;align-items:center;gap:20px;padding:24px 28px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);transition:all .2s;border-bottom:1px solid var(--border)}
+  .link-card:hover{border-color:var(--accent);transform:translateX(4px)}
+  .link-card .link-icon{width:48px;height:48px;border-radius:10px;background:var(--bg-elev);display:flex;align-items:center;justify-content:center;color:var(--accent);flex-shrink:0}
+  .link-card .link-text{flex:1}
+  .link-card h3{font-size:18px;font-weight:600;margin-bottom:4px;color:var(--text)}
+  .link-card p{font-size:13px;color:var(--text-dim)}
+  .link-card .link-url{font-family:'Kode Mono',monospace;font-size:11px;color:var(--text-mute);letter-spacing:0.06em}
+
+  /* CHROME: barra de progresso */
+  #progress{position:fixed;top:0;left:0;height:3px;background:var(--accent);z-index:30;transition:width .3s ease;box-shadow:0 0 12px rgba(212,245,66,0.5)}
+
+  /* CHROME: indicador + controles */
+  #controls{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);z-index:30;display:flex;align-items:center;gap:8px;background:rgba(20,20,20,0.85);backdrop-filter:blur(12px);border:1px solid var(--border-light);border-radius:999px;padding:6px 8px;opacity:0;transition:opacity .3s ease}
+  body.show-ui #controls,#controls:hover{opacity:1}
+  #controls button{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--text-dim);transition:all .2s}
+  #controls button:hover{background:var(--bg-elev);color:var(--accent)}
+  #controls .indicator{font-family:'Kode Mono',monospace;font-size:12px;color:var(--text-dim);letter-spacing:0.1em;padding:0 12px;min-width:60px;text-align:center}
+
+  /* CHROME: cheatsheet */
+  #cheatsheet{position:fixed;inset:0;z-index:90;background:rgba(0,0,0,0.85);backdrop-filter:blur(12px);display:none;align-items:center;justify-content:center;padding:32px}
+  #cheatsheet.open{display:flex}
+  #cheatsheet .panel{background:var(--bg-card);border:1px solid var(--border-light);border-radius:var(--radius);padding:40px;max-width:560px;width:100%}
+  #cheatsheet h3{font-size:24px;font-weight:700;margin-bottom:24px;letter-spacing:-0.02em}
+  #cheatsheet dl{display:grid;grid-template-columns:auto 1fr;gap:14px 24px}
+  #cheatsheet dt{font-family:'Kode Mono',monospace;font-size:12px;color:var(--accent);letter-spacing:0.08em;background:var(--bg-elev);padding:6px 10px;border-radius:6px;border:1px solid var(--border-light);text-align:center;white-space:nowrap;min-width:auto}
+  #cheatsheet dd{color:var(--text-dim);font-size:14px;align-self:center}
+
+  /* CHROME: grade view */
+  #grid{position:fixed;inset:0;z-index:80;background:var(--bg);overflow-y:auto;padding:60px 48px;display:none}
+  #grid.open{display:block}
+  #grid h2{font-family:'Kode Mono',monospace;font-size:13px;color:var(--text-dim);letter-spacing:0.14em;text-transform:uppercase;margin-bottom:32px;text-align:center}
+  .grid-wrap{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px;max-width:1400px;margin:0 auto}
+  .grid-thumb{aspect-ratio:16/9;background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:16px;cursor:pointer;position:relative;overflow:hidden;transition:all .2s;display:flex;flex-direction:column;justify-content:center;font-size:10px}
+  .grid-thumb:hover{border-color:var(--accent);transform:translateY(-2px)}
+  .grid-thumb.active{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent)}
+  .grid-thumb-num{position:absolute;top:8px;right:10px;font-family:'Kode Mono',monospace;font-size:10px;color:var(--text-mute)}
+  .grid-thumb-title{font-size:13px;font-weight:600;line-height:1.3;color:var(--text);overflow:hidden;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical}
+  .grid-thumb-type{position:absolute;bottom:8px;left:10px;font-family:'Kode Mono',monospace;font-size:9px;color:var(--accent);letter-spacing:0.1em;text-transform:uppercase}
+
+  /* DRAW: canvas e toolbar (estilo Excalidraw) */
+  #drawCanvas{position:fixed;inset:0;z-index:50;pointer-events:none}
+  body.drawing #drawCanvas{pointer-events:auto}
+  body.drawing,body.drawing *{cursor:none!important}
+  body.drawing #drawToolbar,body.drawing #drawToolbar *{cursor:pointer!important}
+  body.drawing .draw-text-input,body.drawing .draw-text-input *{cursor:text!important}
+  body.drawing.select-mode #cursorDot{display:none}
+  body.drawing.select-mode,body.drawing.select-mode *{cursor:default!important}
+  body.drawing.select-mode #drawToolbar,body.drawing.select-mode #drawToolbar *{cursor:pointer!important}
+  #cursorDot{position:fixed;pointer-events:none;z-index:65;display:none;transform:translate(-50%,-50%);transition:width .15s ease,height .15s ease,background .15s ease,border-color .15s ease;box-shadow:0 0 0 1px rgba(0,0,0,0.4),0 2px 8px rgba(0,0,0,0.3)}
+  body.drawing #cursorDot{display:block}
+
+  #drawToolbar{position:fixed;left:16px;top:50%;transform:translateY(-50%);z-index:60;display:none;flex-direction:column;gap:4px;padding:8px;background:rgba(20,20,20,0.94);backdrop-filter:blur(12px);border:1px solid var(--border-light);border-radius:14px;box-shadow:0 12px 36px rgba(0,0,0,0.4)}
+  body.drawing #drawToolbar{display:flex}
+  #drawToolbar .tool,#drawToolbar .swatch{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--text-dim);position:relative;transition:all .15s;cursor:pointer}
+  #drawToolbar .tool:hover{background:var(--bg-elev);color:var(--text)}
+  #drawToolbar .tool.active{background:var(--accent);color:#1c1c1c}
+  #drawToolbar .tool .key{position:absolute;bottom:1px;right:3px;font-family:'Kode Mono',monospace;font-size:8px;opacity:.55;letter-spacing:0}
+  #drawToolbar .tool.active .key{opacity:.75}
+  #drawToolbar .swatch{border-radius:50%;border:2px solid transparent;width:28px;height:28px;margin:2px auto}
+  #drawToolbar .swatch:hover{transform:scale(1.1)}
+  #drawToolbar .swatch.active{border-color:#fff;box-shadow:0 0 0 1px rgba(0,0,0,0.5)}
+  #drawToolbar hr{width:24px;border:0;border-top:1px solid var(--border-light);margin:6px auto}
+
+  /* Text input flutuante (ferramenta de texto) */
+  .draw-text-input{position:fixed;z-index:55;background:transparent;border:1px dashed var(--accent);outline:none;font-family:'Geist',sans-serif;font-size:28px;font-weight:600;padding:4px 8px;min-width:80px;line-height:1.2;white-space:pre}
+
+  /* TIPO: canvas (slide só pra desenhar) */
+  .slide[data-type="canvas"]{padding:0;background-color:var(--bg);background-image:radial-gradient(rgba(240,231,218,0.08) 1px,transparent 1.4px);background-size:24px 24px;background-position:0 0}
+  .canvas-label{position:absolute;top:32px;left:48px;font-family:'Kode Mono',monospace;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-mute);pointer-events:none}
+  .canvas-hint{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:var(--text-mute);font-family:'Kode Mono',monospace;font-size:13px;letter-spacing:0.14em;text-transform:uppercase;text-align:center;pointer-events:none;opacity:.55}
+  .canvas-hint strong{color:var(--accent);font-weight:600}
+  .canvas-hint span{display:block;margin-top:14px;font-size:10px;opacity:.7;letter-spacing:0.08em}
+
+  /* LASER trail */
+  #laserCanvas{position:fixed;inset:0;z-index:70;pointer-events:none;display:none}
+  body.laser #laserCanvas{display:block}
+  body.laser,body.laser *{cursor:none!important}
+  #laser{display:none}
+
+  /* NOTES */
+  #notes{position:fixed;right:-360px;top:0;bottom:0;width:340px;background:var(--bg-card);border-left:1px solid var(--border-light);z-index:40;padding:32px 24px;overflow-y:auto;transition:right .3s ease}
+  #notes.open{right:0}
+  #notes h4{font-family:'Kode Mono',monospace;font-size:11px;color:var(--accent);letter-spacing:0.14em;text-transform:uppercase;margin-bottom:14px}
+  #notes .notes-content{color:var(--text-dim);font-size:14px;line-height:1.6}
+  #notes .notes-content:empty::before{content:'Sem notas pra esse slide.';color:var(--text-mute);font-style:italic}
+
+  /* QR */
+  #qr{position:fixed;bottom:80px;right:24px;z-index:40;background:#fff;padding:14px;border-radius:12px;display:none;box-shadow:0 12px 36px rgba(0,0,0,0.5)}
+  #qr.open{display:block}
+  #qr img{width:180px;height:180px;display:block}
+  #qr .qr-label{font-family:'Kode Mono',monospace;font-size:10px;color:#1c1c1c;letter-spacing:0.1em;text-transform:uppercase;text-align:center;margin-top:8px}
+
+  /* TIMER */
+  #timer{position:fixed;top:24px;right:24px;z-index:40;background:var(--bg-card);border:1px solid var(--border-light);border-radius:12px;padding:14px 20px;display:none;align-items:center;gap:14px;font-family:'Kode Mono',monospace}
+  #timer.open{display:flex}
+  #timer.warning{border-color:#c97070;color:#c97070}
+  #timer.done{border-color:var(--accent);color:var(--accent);animation:timerPulse 1s ease infinite}
+  @keyframes timerPulse{0%,100%{box-shadow:0 0 0 0 rgba(212,245,66,0.5)}50%{box-shadow:0 0 0 8px rgba(212,245,66,0)}}
+  #timer .time{font-size:24px;font-weight:700;letter-spacing:-0.02em}
+  #timer .label{font-size:10px;color:var(--text-mute);letter-spacing:0.14em;text-transform:uppercase}
+  #timer button{margin-left:8px;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--text-mute)}
+  #timer button:hover{color:var(--accent)}
+
+  /* Print/PDF */
+  @media print{
+    body{height:auto;overflow:visible}
+    #deck{position:static}
+    .slide{display:flex!important;position:relative;page-break-after:always;height:100vh}
+    #controls,#progress,#cheatsheet,#grid,#drawToolbar,#laser,#notes,#qr,#timer{display:none!important}
+  }
+
+  /* Responsivo (telas pequenas — apresentação raramente é assim, mas ok) */
+  @media (max-width:768px){
+    .slide{padding:48px 32px}
+    .compare{grid-template-columns:1fr}
+    .chart-row{grid-template-columns:100px 1fr 60px;gap:12px}
+  }
+</style>
+</head>
+<body>
+
+<!-- Barra de progresso -->
+<div id="progress" style="width:0%"></div>
+
+<!-- Deck -->
+<main id="deck">
+
+  <!-- SLIDE 1 — Capa -->
+  <section class="slide" data-type="cover" data-notes="Boas-vindas. Apresentar o módulo, o objetivo central e o que o aluno vai sair sabendo. Pergunte: 'quem aqui já tentou prototipar algo além do estático?'">
+    <span class="eyebrow">Módulo 01 · Aula 02</span>
+    <h1>Os <span class="accent">4 níveis</span> de protótipo</h1>
+    <p class="lead">Da imagem clicável ao protótipo funcional. Quando cada um para de servir.</p>
+    <div class="module-tag">Protótipo Funcional · por Nanda Dias</div>
+  </section>
+
+  <!-- SLIDE 2 — Agenda -->
+  <section class="slide" data-type="agenda" data-notes="Mostre onde estamos no módulo. Sinalize que vamos focar na aula 2 hoje.">
+    <div class="slide-header">
+      <span class="eyebrow">Módulo 01</span>
+      <h2>Princípios e framework</h2>
+    </div>
+    <div class="agenda">
+      <div class="agenda-item done"><span class="agenda-num">01</span><span class="agenda-title">Por que protótipo estático não basta mais</span></div>
+      <div class="agenda-item current"><span class="agenda-num">02</span><span class="agenda-title">Os 4 níveis de protótipo</span><span class="agenda-status">Você está aqui</span></div>
+      <div class="agenda-item"><span class="agenda-num">03</span><span class="agenda-title">O framework de decisão</span></div>
+      <div class="agenda-item"><span class="agenda-num">04</span><span class="agenda-title">Os 3 erros que designers cometem ao prototipar com IA</span></div>
+    </div>
+  </section>
+
+  <!-- SLIDE 3 — Bullets com reveal -->
+  <section class="slide" data-type="bullets" data-reveal="true" data-notes="Use o clique pra ir revelando bullet a bullet. Conta uma história em cima de cada um.">
+    <div class="slide-header">
+      <span class="eyebrow">Os 4 níveis</span>
+      <h2>Cada nível resolve um problema <span class="accent">diferente</span></h2>
+    </div>
+    <ul class="bullets">
+      <li><strong>Nível 1 — Estático:</strong> mostra a tela parada. Bom pra crítica visual.</li>
+      <li><strong>Nível 2 — Clicável:</strong> simula a navegação. Bom pra fluxo macro.</li>
+      <li><strong>Nível 3 — Interativo:</strong> tem estado e responde. Bom pra micro-interação.</li>
+      <li><strong>Nível 4 — Funcional:</strong> tem dados reais. É onde a gente vai morar.</li>
+    </ul>
+  </section>
+
+  <!-- SLIDE 4 — Quote -->
+  <section class="slide" data-type="quote" data-notes="Frase-âncora do módulo. Deixe respirar. Não corra pro próximo.">
+    <blockquote>Não é sobre largar o Figma. É sobre saber em que ponto ele para de funcionar pro que você precisa projetar.</blockquote>
+    <cite>— Premissa do curso</cite>
+  </section>
+
+  <!-- SLIDE 5 — Compare -->
+  <section class="slide" data-type="compare" data-notes="Compare protótipo estático vs funcional num caso concreto: campo de busca com sugestões.">
+    <div class="slide-header">
+      <span class="eyebrow">Estático vs Funcional</span>
+      <h2>Busca com sugestões</h2>
+    </div>
+    <div class="compare">
+      <div class="compare-side bad">
+        <span class="tag">● Mockup estático</span>
+        <h3>Você desenha uma tela</h3>
+        <p>3 sugestões hardcoded, todas começando com a mesma letra que o protótipo precisa pra "funcionar" no Figma.</p>
+        <p style="color:var(--text-mute);font-size:13px">— Não testa edge case<br>— Não testa loading<br>— Não testa vazio<br>— Não testa erro</p>
+      </div>
+      <div class="compare-side good">
+        <span class="tag">● Protótipo funcional</span>
+        <h3>Você projeta o comportamento</h3>
+        <p>Digita qualquer letra, a lista filtra de verdade. Apaga tudo, vê o estado vazio. Tira a internet, vê o erro.</p>
+        <p style="color:var(--text-dim);font-size:13px">— Edge cases aparecem sozinhos<br>— Loading existe<br>— Estado vazio é projetado<br>— Erro é desenhado</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 6 — Código -->
+  <section class="slide" data-type="code" data-notes="Aperte E pra ativar edição ao vivo. Mude o array de sugestões durante a aula.">
+    <div class="slide-header">
+      <span class="eyebrow">Nível 4 · Funcional</span>
+      <h2>Filtro real em <span class="accent">15 linhas</span></h2>
+    </div>
+    <div class="code-toolbar">
+      <span class="filename">SearchSuggest.jsx</span>
+      <button class="btn-edit" onclick="toggleEdit(this)">Editar ao vivo (E)</button>
+    </div>
+<pre><code class="language-jsx">function SearchSuggest({ items }) {
+  const [query, setQuery] = useState('');
+  const filtered = items.filter(i =&gt;
+    i.toLowerCase().includes(query.toLowerCase())
+  );
+
+  return (
+    &lt;div&gt;
+      &lt;input value={query} onChange={e =&gt; setQuery(e.target.value)} /&gt;
+      {filtered.length === 0 &amp;&amp; &lt;Empty /&gt;}
+      &lt;ul&gt;{filtered.map(i =&gt; &lt;li key={i}&gt;{i}&lt;/li&gt;)}&lt;/ul&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+  </section>
+
+  <!-- SLIDE 7 — Demo embedada -->
+  <section class="slide" data-type="demo" data-notes="Demo ao vivo do componente. Substitua o iframe-src ou jogue o componente inline.">
+    <div class="slide-header">
+      <span class="eyebrow">Demo ao vivo</span>
+      <h2>Brinca aí</h2>
+    </div>
+    <div class="demo-frame">
+      <!-- Troque por <iframe src="demo.html"></iframe> ou embute o componente -->
+      <div class="demo-placeholder">
+        SLOT DE DEMO
+        <span>Substitua por <code>&lt;iframe src="sua-demo.html"&gt;&lt;/iframe&gt;</code> ou cole o componente inline aqui.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 8 — Gráfico -->
+  <section class="slide" data-type="chart" data-notes="Os dados são fictícios mas batem com o que vejo no mercado. Use pra reforçar a urgência do tema.">
+    <div class="slide-header">
+      <span class="eyebrow">Pesquisa interna · 2026</span>
+      <h2>O que designers usam <span class="accent">hoje</span></h2>
+    </div>
+    <div class="chart-wrap">
+      <div class="chart-row">
+        <span class="chart-label">Figma estático</span>
+        <div class="chart-bar"><div class="chart-fill" style="width:88%"></div></div>
+        <span class="chart-value">88%</span>
+      </div>
+      <div class="chart-row">
+        <span class="chart-label">Clicável</span>
+        <div class="chart-bar"><div class="chart-fill" style="width:62%"></div></div>
+        <span class="chart-value">62%</span>
+      </div>
+      <div class="chart-row">
+        <span class="chart-label">Com código</span>
+        <div class="chart-bar"><div class="chart-fill" style="width:18%"></div></div>
+        <span class="chart-value">18%</span>
+      </div>
+      <div class="chart-row">
+        <span class="chart-label">Funcional real</span>
+        <div class="chart-bar"><div class="chart-fill" style="width:4%"></div></div>
+        <span class="chart-value">4%</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 9 — Imagem inteira -->
+  <section class="slide" data-type="image" data-notes="Use pra ilustrações, screenshots de Figma Make, prints de cases. Adicione classe 'cover' se quiser preencher tudo.">
+    <img src="https://placehold.co/1920x1080/1c1c1c/D4F542?text=Imagem+Inteira" alt="Exemplo de slide com imagem"/>
+    <div class="image-caption">Substitua o src da imagem por um screenshot real</div>
+  </section>
+
+  <!-- SLIDE 10 — Vídeo -->
+  <section class="slide" data-type="video" data-notes="Embedde YouTube, Loom ou vídeo local. Pause antes de explicar.">
+    <iframe src="https://www.youtube.com/embed/-QPU6HGFH58" title="Vídeo de apresentação" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+  </section>
+
+  <!-- SLIDE 11 — Links -->
+  <section class="slide" data-type="links" data-notes="Recursos pra aprofundar. Os alunos podem usar o QR (Q) pra abrir no celular.">
+    <div class="slide-header">
+      <span class="eyebrow">Pra aprofundar</span>
+      <h2>Recursos da aula</h2>
+    </div>
+    <div class="links-list">
+      <a class="link-card" href="https://prototipofuncional.com.br" target="_blank" rel="noopener">
+        <div class="link-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 17H7a5 5 0 0 1 0-10h2M15 7h2a5 5 0 0 1 0 10h-2M8 12h8"/></svg></div>
+        <div class="link-text">
+          <h3>Site do curso</h3>
+          <p>Roadmap em tempo real e materiais por módulo</p>
+        </div>
+        <span class="link-url">prototipofuncional.com.br</span>
+      </a>
+      <a class="link-card" href="https://www.figma.com/make" target="_blank" rel="noopener">
+        <div class="link-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M12 3v18M3 12h18"/></svg></div>
+        <div class="link-text">
+          <h3>Figma Make</h3>
+          <p>Ferramenta usada no Módulo 2</p>
+        </div>
+        <span class="link-url">figma.com/make</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- SLIDE 12 — Canvas (área de desenho livre) -->
+  <section class="slide" data-type="canvas" data-notes="Slide aberto pra rascunhar com a turma. Aperte D pra ativar a caneta. Os desenhos ficam salvos no slide enquanto a aba estiver aberta.">
+    <span class="canvas-label">Rascunho · módulo 01</span>
+    <div class="canvas-hint">
+      Aperta <strong>D</strong> e desenha
+      <span>V mão · 1 pincel · 2 marca-texto · 3 linha · 4 seta · 5 retângulo · 6 elipse · 7 texto · 8 borracha</span>
+    </div>
+  </section>
+
+  <!-- SLIDE 13 — Encerramento -->
+  <section class="slide" data-type="cover" data-notes="Encerre a aula com a próxima. Próximo: framework de decisão das 5 perguntas.">
+    <span class="eyebrow">Próxima aula</span>
+    <h1>O <span class="accent">framework</span><br>de decisão</h1>
+    <p class="lead">5 perguntas pra saber qual nível de protótipo você precisa <em>agora</em>.</p>
+    <div class="module-tag">Obrigada. Até a próxima 🍄</div>
+  </section>
+
+</main>
+
+<!-- Chrome: Canvas de desenho -->
+<canvas id="drawCanvas"></canvas>
+<div id="cursorDot"></div>
+<div id="drawToolbar" aria-label="Ferramentas de desenho">
+  <button class="tool" data-tool="select" title="Mão · seleciona, move, redimensiona (V · Esc)">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 11V6a2 2 0 0 0-4 0v5"/><path d="M14 10V4a2 2 0 0 0-4 0v6"/><path d="M10 10.5V6a2 2 0 0 0-4 0v9"/><path d="M6 10v8a4 4 0 0 0 4 4h2a8 8 0 0 0 8-8V8a2 2 0 0 0-4 0v5"/></svg>
+    <span class="key">V</span>
+  </button>
+  <hr>
+  <button class="tool active" data-tool="pen" title="Pincel fino (1)">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9.06 11.9l8.07-8.06a2.85 2.85 0 1 1 4.03 4.03l-8.06 8.08"/><path d="M7.07 14.94c-1.66 0-3 1.35-3 3.02 0 1.33-2.5 1.52-2 2.02 1.08 1.1 2.49 2.02 4 2.02 2.2 0 4-1.8 4-4.04a3.01 3.01 0 0 0-3-3.02z"/></svg>
+    <span class="key">1</span>
+  </button>
+  <button class="tool" data-tool="highlighter" title="Pincel grosso · marca-texto (2 · H)">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9.06 11.9l8.07-8.06a2.85 2.85 0 1 1 4.03 4.03l-8.06 8.08"/><path d="M7.07 14.94c-1.66 0-3 1.35-3 3.02 0 1.33-2.5 1.52-2 2.02 1.08 1.1 2.49 2.02 4 2.02 2.2 0 4-1.8 4-4.04a3.01 3.01 0 0 0-3-3.02z"/></svg>
+    <span class="key">2</span>
+  </button>
+  <button class="tool" data-tool="line" title="Linha (3)">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="19" x2="19" y2="5"/></svg>
+    <span class="key">3</span>
+  </button>
+  <button class="tool" data-tool="arrow" title="Seta (4)">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="19" x2="18" y2="6"/><polyline points="11 6 18 6 18 13"/></svg>
+    <span class="key">4</span>
+  </button>
+  <button class="tool" data-tool="rect" title="Retângulo (5)">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="1"/></svg>
+    <span class="key">5</span>
+  </button>
+  <button class="tool" data-tool="ellipse" title="Elipse (6)">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="12" rx="9" ry="6"/></svg>
+    <span class="key">6</span>
+  </button>
+  <button class="tool" data-tool="text" title="Texto (7)">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg>
+    <span class="key">7</span>
+  </button>
+  <button class="tool" data-tool="eraser" title="Borracha (8)">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 20H7L3 16c-.6-.6-.6-1.5 0-2L13 4c.6-.6 1.5-.6 2 0l6 6c.6.6.6 1.5 0 2L11 22"/></svg>
+    <span class="key">8</span>
+  </button>
+  <hr>
+  <button class="swatch active" data-color="#D4F542" style="background:#D4F542" title="Verde neon"></button>
+  <button class="swatch" data-color="#FF6B6B" style="background:#FF6B6B" title="Vermelho"></button>
+  <button class="swatch" data-color="#4ECDC4" style="background:#4ECDC4" title="Ciano"></button>
+  <button class="swatch" data-color="#f0e7da" style="background:#f0e7da" title="Creme"></button>
+  <hr>
+  <button class="tool" id="drawUndo" title="Desfazer (Ctrl+Z)">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-15-6.7L3 13"/></svg>
+  </button>
+  <button class="tool" id="drawClear" title="Limpar slide (Shift+D)">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
+  </button>
+  <hr>
+  <button class="tool" id="drawClose" title="Fechar modo desenho (D)">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+  </button>
+</div>
+
+<!-- Chrome: Laser pointer com rastro -->
+<canvas id="laserCanvas"></canvas>
+
+<!-- Chrome: Speaker notes -->
+<aside id="notes" aria-label="Notas do palestrante">
+  <h4>Notas do slide</h4>
+  <div class="notes-content"></div>
+</aside>
+
+<!-- Chrome: QR Code do slide atual -->
+<div id="qr">
+  <img alt="QR Code"/>
+  <div class="qr-label">Escaneia pra abrir</div>
+</div>
+
+<!-- Chrome: Timer de exercício -->
+<div id="timer">
+  <div>
+    <div class="label">Exercício</div>
+    <div class="time">05:00</div>
+  </div>
+  <button id="timerToggle" title="Pausar/Retomar"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/></svg></button>
+  <button id="timerClose" title="Fechar">✕</button>
+</div>
+
+<!-- Chrome: Controles -->
+<nav id="controls" aria-label="Navegação de slides">
+  <button id="btnPrev" title="Anterior (←)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></button>
+  <span class="indicator"><span id="curIdx">1</span> / <span id="totalIdx">12</span></span>
+  <button id="btnNext" title="Próximo (→)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></button>
+  <button id="btnGrid" title="Grade (G)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></button>
+  <button id="btnHelp" title="Atalhos (?)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3M12 17h.01"/></svg></button>
+</nav>
+
+<!-- Chrome: Grade view -->
+<div id="grid" role="dialog" aria-label="Visão em grade">
+  <h2>Todos os slides — clique para ir</h2>
+  <div class="grid-wrap" id="gridWrap"></div>
+</div>
+
+<!-- Chrome: Cheatsheet -->
+<div id="cheatsheet" role="dialog" aria-label="Atalhos de teclado">
+  <div class="panel">
+    <h3>Atalhos</h3>
+    <dl>
+      <dt>← →</dt><dd>Navegar entre slides</dd>
+      <dt>Space</dt><dd>Próximo (ou próximo bullet em slides com reveal)</dd>
+      <dt>Home / End</dt><dd>Primeiro / último slide</dd>
+      <dt>G</dt><dd>Visão em grade</dd>
+      <dt>F</dt><dd>Tela cheia</dd>
+      <dt>D</dt><dd>Abrir/fechar modo desenho (Shift+D limpa o slide)</dd>
+      <dt>V · Esc</dt><dd>Mão — selecionar, mover, redimensionar</dd>
+      <dt>1–8</dt><dd>Pincel fino, marca-texto, linha, seta, retângulo, elipse, texto, borracha</dd>
+      <dt>H</dt><dd>Atalho extra do marca-texto</dd>
+      <dt>Del</dt><dd>Apagar shape selecionado</dd>
+      <dt>Ctrl+Z</dt><dd>Desfazer último traço</dd>
+      <dt>L</dt><dd>Laser pointer com rastro</dd>
+      <dt>N</dt><dd>Notas do palestrante</dd>
+      <dt>E</dt><dd>Editar código ao vivo</dd>
+      <dt>Q</dt><dd>QR code do slide atual</dd>
+      <dt>T</dt><dd>Timer de exercício (5 min)</dd>
+      <dt>?</dt><dd>Esta tela</dd>
+      <dt>Esc</dt><dd>Fechar overlays</dd>
+    </dl>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-core.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<script>
+/* ============================================================
+   PROTÓTIPO FUNCIONAL — Engine de apresentação
+   ============================================================ */
+
+const slides = Array.from(document.querySelectorAll('.slide'));
+const total = slides.length;
+let current = 0;
+let revealedBullets = 0;
+
+const progress = document.getElementById('progress');
+const curIdx = document.getElementById('curIdx');
+const totalIdx = document.getElementById('totalIdx');
+totalIdx.textContent = total;
+
+/* --- Navegação --- */
+function goTo(i, opts = {}) {
+  i = Math.max(0, Math.min(total - 1, i));
+  slides[current].classList.remove('active');
+  current = i;
+  slides[current].classList.add('active');
+  curIdx.textContent = i + 1;
+  progress.style.width = ((i + 1) / total * 100) + '%';
+  history.replaceState(null, '', '#' + (i + 1));
+  revealedBullets = 0;
+  applyReveal();
+  updateNotes();
+  updateGridActive();
+  updateQR();
+  // Re-highlight code on slide enter (Prism)
+  if (window.Prism) Prism.highlightAllUnder(slides[current]);
+  // Reset slide numbers chrome
+  setSlideChrome();
+}
+
+function next() {
+  const slide = slides[current];
+  if (slide.dataset.reveal === 'true') {
+    const bullets = slide.querySelectorAll('.bullets li');
+    if (revealedBullets < bullets.length) {
+      bullets[revealedBullets].classList.add('revealed');
+      revealedBullets++;
+      return;
+    }
+  }
+  goTo(current + 1);
+}
+
+function prev() { goTo(current - 1); }
+
+function applyReveal() {
+  const slide = slides[current];
+  const bullets = slide.querySelectorAll('.bullets li');
+  if (slide.dataset.reveal === 'true') {
+    bullets.forEach(b => b.classList.remove('revealed'));
+  } else {
+    bullets.forEach(b => b.classList.add('revealed'));
+  }
+}
+
+function setSlideChrome() {
+  slides.forEach((s, i) => {
+    let num = s.querySelector('.slide-num');
+    if (!num && s.dataset.type !== 'image' && s.dataset.type !== 'video') {
+      num = document.createElement('div');
+      num.className = 'slide-num';
+      num.textContent = String(i + 1).padStart(2, '0') + ' / ' + String(total).padStart(2, '0');
+      s.appendChild(num);
+    }
+    let brand = s.querySelector('.slide-brand');
+    if (!brand && s.dataset.type !== 'cover' && s.dataset.type !== 'image' && s.dataset.type !== 'video' && s.dataset.type !== 'quote') {
+      brand = document.createElement('div');
+      brand.className = 'slide-brand';
+      brand.textContent = 'Protótipo Funcional';
+      s.appendChild(brand);
+    }
+  });
+}
+
+/* --- Teclado --- */
+document.addEventListener('keydown', (e) => {
+  if (e.target.matches('input, textarea, [contenteditable="true"]')) return;
+  const k = e.key.toLowerCase();
+  if (k === 'arrowright' || k === ' ') { e.preventDefault(); next(); }
+  else if (k === 'arrowleft') { e.preventDefault(); prev(); }
+  else if (k === 'home') goTo(0);
+  else if (k === 'end') goTo(total - 1);
+  else if (k === 'g') toggleGrid();
+  else if (k === 'f') toggleFullscreen();
+  else if (k === 'd' && e.shiftKey) clearSlideDrawing();
+  else if (k === 'd') toggleDraw();
+  else if (document.body.classList.contains('drawing') && '12345678'.includes(k)) {
+    const tools = { '1':'pen', '2':'highlighter', '3':'line', '4':'arrow', '5':'rect', '6':'ellipse', '7':'text', '8':'eraser' };
+    setTool(tools[k]);
+  }
+  else if (document.body.classList.contains('drawing') && k === 'v') setTool('select');
+  else if (document.body.classList.contains('drawing') && k === 'h') setTool('highlighter');
+  else if (document.body.classList.contains('drawing') && (k === 'delete' || k === 'backspace') && selected) {
+    e.preventDefault(); deleteSelected();
+  }
+  else if ((e.ctrlKey || e.metaKey) && k === 'z') { e.preventDefault(); undo(); }
+  else if (k === 'l') toggleLaser();
+  else if (k === 'n') toggleNotes();
+  else if (k === 'e') toggleEditOnCurrent();
+  else if (k === 'q') toggleQR();
+  else if (k === 't') toggleTimer();
+  else if (k === '?' || (e.shiftKey && k === '/')) toggleHelp();
+  else if (k === 'escape') {
+    if (document.body.classList.contains('drawing')) setTool('select');
+    else closeOverlays();
+  }
+});
+
+/* --- Botões --- */
+document.getElementById('btnPrev').onclick = prev;
+document.getElementById('btnNext').onclick = next;
+document.getElementById('btnGrid').onclick = toggleGrid;
+document.getElementById('btnHelp').onclick = toggleHelp;
+
+/* --- Hash inicial --- */
+function bootFromHash() {
+  const h = parseInt(location.hash.replace('#', ''), 10);
+  if (h && h >= 1 && h <= total) goTo(h - 1);
+  else goTo(0);
+}
+
+/* --- Mostrar UI temporariamente ao mover mouse --- */
+let uiTimer;
+document.addEventListener('mousemove', () => {
+  document.body.classList.add('show-ui');
+  clearTimeout(uiTimer);
+  uiTimer = setTimeout(() => document.body.classList.remove('show-ui'), 2500);
+});
+
+/* ============================================================
+   GRADE VIEW
+   ============================================================ */
+const gridEl = document.getElementById('grid');
+const gridWrap = document.getElementById('gridWrap');
+
+function buildGrid() {
+  gridWrap.innerHTML = '';
+  slides.forEach((s, i) => {
+    const t = document.createElement('div');
+    t.className = 'grid-thumb';
+    t.dataset.idx = i;
+    const title = s.querySelector('h1, h2, blockquote')?.textContent.trim().slice(0, 80) || 'Sem título';
+    t.innerHTML = `
+      <span class="grid-thumb-num">${String(i + 1).padStart(2, '0')}</span>
+      <span class="grid-thumb-title">${title}</span>
+      <span class="grid-thumb-type">${s.dataset.type || 'slide'}</span>
+    `;
+    t.onclick = () => { goTo(i); toggleGrid(false); };
+    gridWrap.appendChild(t);
+  });
+}
+
+function updateGridActive() {
+  gridWrap.querySelectorAll('.grid-thumb').forEach((t, i) => {
+    t.classList.toggle('active', i === current);
+  });
+}
+
+function toggleGrid(force) {
+  const open = typeof force === 'boolean' ? force : !gridEl.classList.contains('open');
+  gridEl.classList.toggle('open', open);
+}
+
+/* ============================================================
+   FULLSCREEN
+   ============================================================ */
+function toggleFullscreen() {
+  if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+  else document.exitFullscreen();
+}
+
+/* ============================================================
+   DESENHO — engine estilo Excalidraw (select + resize + snap)
+   ============================================================ */
+const canvas = document.getElementById('drawCanvas');
+const ctx = canvas.getContext('2d');
+const cursorDot = document.getElementById('cursorDot');
+
+let tool = 'pen';
+let drawColor = '#D4F542';
+const lineWidth = 4;
+const shapeWidth = 3;
+const highlightWidth = 22;
+let shapeIdCounter = 0;
+
+// Cada slide guarda seus próprios shapes (memória; perde ao refresh)
+const shapesPerSlide = {};
+function getShapes() {
+  if (!shapesPerSlide[current]) shapesPerSlide[current] = [];
+  return shapesPerSlide[current];
+}
+function shapesById(id) {
+  return getShapes().find(s => s.id === id) || null;
+}
+
+let pointer = { active: false, start: null, currentPath: null, preview: null };
+let selected = null;
+let interaction = null;     // {type:'move'|'resize', handle, dragStart, shapeStart}
+let snapTarget = null;      // id do shape sob snap durante draw
+
+function resizeCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  render();
+}
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
+
+function toggleDraw() {
+  document.body.classList.toggle('drawing');
+  if (!document.body.classList.contains('drawing')) {
+    pointer.active = false;
+    selected = null;
+    interaction = null;
+    render();
+  }
+}
+function clearSlideDrawing() {
+  shapesPerSlide[current] = [];
+  selected = null;
+  render();
+}
+
+/* ---- Render ---- */
+function render() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  for (const s of getShapes()) drawShape(s);
+  if (pointer.preview) drawShape(pointer.preview);
+  renderSnapHighlight();
+  renderSelection();
+}
+
+function drawShape(s) {
+  ctx.save();
+  ctx.strokeStyle = s.color;
+  ctx.fillStyle = s.color;
+  ctx.lineWidth = s.width || shapeWidth;
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+  ctx.globalCompositeOperation = 'source-over';
+  ctx.globalAlpha = 1;
+
+  if (s.type === 'pen') {
+    if (s.points.length >= 2) {
+      ctx.beginPath();
+      ctx.moveTo(s.points[0].x, s.points[0].y);
+      for (let i = 1; i < s.points.length; i++) ctx.lineTo(s.points[i].x, s.points[i].y);
+      ctx.stroke();
+    }
+  } else if (s.type === 'highlighter') {
+    if (s.points.length >= 2) {
+      ctx.globalAlpha = 0.35;
+      ctx.lineWidth = s.width || highlightWidth;
+      ctx.lineCap = 'butt';
+      ctx.beginPath();
+      ctx.moveTo(s.points[0].x, s.points[0].y);
+      for (let i = 1; i < s.points.length; i++) ctx.lineTo(s.points[i].x, s.points[i].y);
+      ctx.stroke();
+    }
+  } else if (s.type === 'line') {
+    const { start, end } = resolveEndpoints(s);
+    ctx.beginPath();
+    ctx.moveTo(start.x, start.y);
+    ctx.lineTo(end.x, end.y);
+    ctx.stroke();
+  } else if (s.type === 'arrow') {
+    const { start, end } = resolveEndpoints(s);
+    drawArrow(start, end, s.width || shapeWidth);
+  } else if (s.type === 'rect') {
+    const box = boxFromStartEnd(s);
+    ctx.strokeRect(box.x, box.y, box.w, box.h);
+  } else if (s.type === 'ellipse') {
+    const box = boxFromStartEnd(s);
+    if (box.w >= 1 && box.h >= 1) {
+      ctx.beginPath();
+      ctx.ellipse(box.x + box.w / 2, box.y + box.h / 2, box.w / 2, box.h / 2, 0, 0, Math.PI * 2);
+      ctx.stroke();
+    }
+  } else if (s.type === 'text') {
+    ctx.font = `600 ${s.size || 28}px Geist, sans-serif`;
+    ctx.textBaseline = 'top';
+    ctx.fillText(s.text, s.pos.x, s.pos.y);
+  }
+  ctx.restore();
+}
+
+function drawArrow(a, b, w) {
+  ctx.beginPath();
+  ctx.moveTo(a.x, a.y);
+  ctx.lineTo(b.x, b.y);
+  ctx.stroke();
+  const ang = Math.atan2(b.y - a.y, b.x - a.x);
+  const len = Math.max(12, w * 4);
+  ctx.beginPath();
+  ctx.moveTo(b.x, b.y);
+  ctx.lineTo(b.x - len * Math.cos(ang - Math.PI / 6), b.y - len * Math.sin(ang - Math.PI / 6));
+  ctx.moveTo(b.x, b.y);
+  ctx.lineTo(b.x - len * Math.cos(ang + Math.PI / 6), b.y - len * Math.sin(ang + Math.PI / 6));
+  ctx.stroke();
+}
+
+function boxFromStartEnd(s) {
+  const x = Math.min(s.start.x, s.end.x), y = Math.min(s.start.y, s.end.y);
+  return { x, y, w: Math.abs(s.end.x - s.start.x), h: Math.abs(s.end.y - s.start.y) };
+}
+
+function getShapeBox(s) {
+  if (s.type === 'rect' || s.type === 'ellipse' || s.type === 'line' || s.type === 'arrow') {
+    return boxFromStartEnd(s);
+  }
+  if (s.type === 'pen' || s.type === 'highlighter') {
+    let mnX = Infinity, mnY = Infinity, mxX = -Infinity, mxY = -Infinity;
+    for (const p of s.points) {
+      if (p.x < mnX) mnX = p.x; if (p.y < mnY) mnY = p.y;
+      if (p.x > mxX) mxX = p.x; if (p.y > mxY) mxY = p.y;
+    }
+    return { x: mnX, y: mnY, w: mxX - mnX, h: mxY - mnY };
+  }
+  if (s.type === 'text') {
+    ctx.font = `600 ${s.size || 28}px Geist, sans-serif`;
+    return { x: s.pos.x, y: s.pos.y, w: ctx.measureText(s.text).width, h: (s.size || 28) * 1.2 };
+  }
+  return { x: 0, y: 0, w: 0, h: 0 };
+}
+
+function centerOf(s) {
+  if (!s) return { x: 0, y: 0 };
+  const b = getShapeBox(s);
+  return { x: b.x + b.w / 2, y: b.y + b.h / 2 };
+}
+
+/* ---- Snap: resolução dinâmica de extremos de line/arrow ---- */
+function resolveEndpoints(s) {
+  let start = s.start, end = s.end;
+  if (s.startBound) {
+    const t = shapesById(s.startBound);
+    if (t) {
+      const toward = s.endBound ? centerOf(shapesById(s.endBound)) : end;
+      start = connectionPoint(t, toward.x, toward.y);
+    }
+  }
+  if (s.endBound) {
+    const t = shapesById(s.endBound);
+    if (t) {
+      const toward = s.startBound ? centerOf(shapesById(s.startBound)) : start;
+      end = connectionPoint(t, toward.x, toward.y);
+    }
+  }
+  return { start, end };
+}
+
+function connectionPoint(shape, fromX, fromY) {
+  const box = getShapeBox(shape);
+  const cx = box.x + box.w / 2, cy = box.y + box.h / 2;
+  const dx = fromX - cx, dy = fromY - cy;
+  if (Math.abs(dx) < 0.001 && Math.abs(dy) < 0.001) return { x: cx, y: cy };
+
+  if (shape.type === 'ellipse') {
+    const rx = Math.max(1, box.w / 2), ry = Math.max(1, box.h / 2);
+    const denom = Math.sqrt((dx * dx) / (rx * rx) + (dy * dy) / (ry * ry));
+    return { x: cx + dx / denom, y: cy + dy / denom };
+  }
+  // box (rect, text)
+  const halfW = Math.max(1, box.w / 2), halfH = Math.max(1, box.h / 2);
+  const tx = Math.abs(dx) > 0.001 ? halfW / Math.abs(dx) : Infinity;
+  const ty = Math.abs(dy) > 0.001 ? halfH / Math.abs(dy) : Infinity;
+  const t = Math.min(tx, ty);
+  return { x: cx + t * dx, y: cy + t * dy };
+}
+
+function findSnapTarget(x, y, excludeId) {
+  const SNAP = 30;
+  const shapes = getShapes();
+  for (let i = shapes.length - 1; i >= 0; i--) {
+    const s = shapes[i];
+    if (!s.id || s.id === excludeId) continue;
+    if (s.type !== 'rect' && s.type !== 'ellipse' && s.type !== 'text') continue;
+    const box = getShapeBox(s);
+    if (x >= box.x - SNAP && x <= box.x + box.w + SNAP &&
+        y >= box.y - SNAP && y <= box.y + box.h + SNAP) {
+      return s.id;
+    }
+  }
+  return null;
+}
+
+/* ---- Seleção: handles, hit-test, render ---- */
+function getHandles(s) {
+  if (s.type === 'rect' || s.type === 'ellipse') {
+    const x0 = Math.min(s.start.x, s.end.x), y0 = Math.min(s.start.y, s.end.y);
+    const x1 = Math.max(s.start.x, s.end.x), y1 = Math.max(s.start.y, s.end.y);
+    const mx = (x0 + x1) / 2, my = (y0 + y1) / 2;
+    return {
+      nw: { x: x0, y: y0 }, n: { x: mx, y: y0 }, ne: { x: x1, y: y0 },
+      w:  { x: x0, y: my },                       e:  { x: x1, y: my },
+      sw: { x: x0, y: y1 }, s: { x: mx, y: y1 }, se: { x: x1, y: y1 }
+    };
+  }
+  if (s.type === 'line' || s.type === 'arrow') {
+    const { start, end } = resolveEndpoints(s);
+    return { start, end };
+  }
+  return {};
+}
+
+function hitHandle(s, x, y) {
+  const tol = 8;
+  for (const [name, p] of Object.entries(getHandles(s))) {
+    if (Math.abs(p.x - x) <= tol && Math.abs(p.y - y) <= tol) return name;
+  }
+  return null;
+}
+
+function hitTestShapes(x, y) {
+  const shapes = getShapes();
+  for (let i = shapes.length - 1; i >= 0; i--) {
+    if (shapeContains(shapes[i], x, y)) return shapes[i];
+  }
+  return null;
+}
+
+function renderSelection() {
+  if (!selected) return;
+  const box = getShapeBox(selected);
+  ctx.save();
+  ctx.strokeStyle = '#D4F542';
+  ctx.lineWidth = 1.5;
+  ctx.setLineDash([6, 4]);
+  ctx.strokeRect(box.x - 5, box.y - 5, box.w + 10, box.h + 10);
+  ctx.setLineDash([]);
+
+  const handles = getHandles(selected);
+  ctx.fillStyle = '#1c1c1c';
+  ctx.strokeStyle = '#D4F542';
+  ctx.lineWidth = 2;
+  for (const p of Object.values(handles)) {
+    ctx.fillRect(p.x - 5, p.y - 5, 10, 10);
+    ctx.strokeRect(p.x - 5, p.y - 5, 10, 10);
+  }
+  ctx.restore();
+}
+
+function renderSnapHighlight() {
+  if (!snapTarget) return;
+  const t = shapesById(snapTarget);
+  if (!t) return;
+  const box = getShapeBox(t);
+  ctx.save();
+  ctx.strokeStyle = 'rgba(212,245,66,0.9)';
+  ctx.lineWidth = 2;
+  ctx.setLineDash([4, 4]);
+  ctx.strokeRect(box.x - 6, box.y - 6, box.w + 12, box.h + 12);
+  ctx.restore();
+}
+
+function cloneShape(s) { return JSON.parse(JSON.stringify(s)); }
+
+function moveShape(s, original, dx, dy) {
+  if (s.type === 'pen' || s.type === 'highlighter') {
+    s.points = original.points.map(p => ({ x: p.x + dx, y: p.y + dy }));
+  } else if (s.type === 'text') {
+    s.pos = { x: original.pos.x + dx, y: original.pos.y + dy };
+  } else {
+    s.start = { x: original.start.x + dx, y: original.start.y + dy };
+    s.end = { x: original.end.x + dx, y: original.end.y + dy };
+  }
+}
+
+function resizeShape(s, original, handle, x, y) {
+  if (s.type === 'line' || s.type === 'arrow') {
+    if (handle === 'start') { s.start = { x, y }; delete s.startBound; }
+    else if (handle === 'end') { s.end = { x, y }; delete s.endBound; }
+  } else if (s.type === 'rect' || s.type === 'ellipse') {
+    let x0 = Math.min(original.start.x, original.end.x);
+    let y0 = Math.min(original.start.y, original.end.y);
+    let x1 = Math.max(original.start.x, original.end.x);
+    let y1 = Math.max(original.start.y, original.end.y);
+    if (handle.includes('n')) y0 = y;
+    if (handle.includes('s')) y1 = y;
+    if (handle.includes('w')) x0 = x;
+    if (handle.includes('e')) x1 = x;
+    s.start = { x: x0, y: y0 };
+    s.end = { x: x1, y: y1 };
+  }
+}
+
+function handleCursor(h) {
+  if (h === 'start' || h === 'end') return 'move';
+  if (h === 'nw' || h === 'se') return 'nwse-resize';
+  if (h === 'ne' || h === 'sw') return 'nesw-resize';
+  if (h === 'n' || h === 's') return 'ns-resize';
+  if (h === 'e' || h === 'w') return 'ew-resize';
+  return 'default';
+}
+
+function updateSelectCursor(x, y) {
+  if (interaction) return;
+  let cur = 'default';
+  if (selected) {
+    const h = hitHandle(selected, x, y);
+    if (h) cur = handleCursor(h);
+    else if (shapeContains(selected, x, y)) cur = 'move';
+  }
+  if (cur === 'default' && hitTestShapes(x, y)) cur = 'move';
+  canvas.style.cursor = cur;
+}
+
+/* ---- Pointer events ---- */
+canvas.addEventListener('pointerdown', (e) => {
+  if (!document.body.classList.contains('drawing')) return;
+  const x = e.clientX, y = e.clientY;
+  canvas.setPointerCapture(e.pointerId);
+
+  if (tool === 'select') {
+    if (selected) {
+      const h = hitHandle(selected, x, y);
+      if (h) {
+        interaction = { type: 'resize', handle: h, dragStart: { x, y }, shapeStart: cloneShape(selected) };
+        return;
+      }
+    }
+    const hit = hitTestShapes(x, y);
+    if (hit) {
+      selected = hit;
+      interaction = { type: 'move', dragStart: { x, y }, shapeStart: cloneShape(hit) };
+    } else {
+      selected = null;
+    }
+    render();
+    return;
+  }
+
+  if (tool === 'text') { spawnTextInput(x, y); return; }
+  if (tool === 'eraser') { eraseAt(x, y); return; }
+
+  pointer.active = true;
+  pointer.start = { x, y };
+
+  if (tool === 'pen' || tool === 'highlighter') {
+    pointer.currentPath = {
+      type: tool, points: [{ x, y }], color: drawColor,
+      width: tool === 'highlighter' ? highlightWidth : lineWidth
+    };
+    pointer.preview = pointer.currentPath;
+  } else {
+    pointer.preview = { type: tool, start: { x, y }, end: { x, y }, color: drawColor, width: shapeWidth };
+    if (tool === 'line' || tool === 'arrow') {
+      const t = findSnapTarget(x, y);
+      if (t) pointer.preview.startBound = t;
+    }
+  }
+  render();
+});
+
+canvas.addEventListener('pointermove', (e) => {
+  updateCursorDot(e.clientX, e.clientY);
+
+  if (tool === 'select') {
+    updateSelectCursor(e.clientX, e.clientY);
+    if (interaction && selected) {
+      const dx = e.clientX - interaction.dragStart.x;
+      const dy = e.clientY - interaction.dragStart.y;
+      if (interaction.type === 'move') moveShape(selected, interaction.shapeStart, dx, dy);
+      else if (interaction.type === 'resize') resizeShape(selected, interaction.shapeStart, interaction.handle, e.clientX, e.clientY);
+      render();
+    }
+    return;
+  }
+
+  if (!pointer.active) return;
+
+  if ((tool === 'pen' || tool === 'highlighter') && pointer.currentPath) {
+    pointer.currentPath.points.push({ x: e.clientX, y: e.clientY });
+  } else if (pointer.preview) {
+    pointer.preview.end = { x: e.clientX, y: e.clientY };
+    if (tool === 'line' || tool === 'arrow') {
+      const t = findSnapTarget(e.clientX, e.clientY);
+      snapTarget = t;
+      if (t) pointer.preview.endBound = t;
+      else delete pointer.preview.endBound;
+    }
+  }
+  render();
+});
+
+function commitDraw() {
+  if (tool === 'select') { interaction = null; return; }
+  if (!pointer.active) return;
+  pointer.active = false;
+  if (pointer.preview) {
+    const p = pointer.preview;
+    const isShape = ['line', 'arrow', 'rect', 'ellipse'].includes(p.type);
+    const degenerate = isShape && !p.startBound && !p.endBound &&
+      Math.hypot(p.end.x - p.start.x, p.end.y - p.start.y) < 4;
+    if (!degenerate) {
+      p.id = ++shapeIdCounter;
+      getShapes().push(p);
+    }
+  }
+  pointer.preview = null;
+  pointer.currentPath = null;
+  snapTarget = null;
+  render();
+}
+canvas.addEventListener('pointerup', commitDraw);
+
+/* ---- Borracha (apaga shape sob o ponto) ---- */
+function eraseAt(x, y) {
+  const shapes = getShapes();
+  for (let i = shapes.length - 1; i >= 0; i--) {
+    if (shapeContains(shapes[i], x, y)) {
+      const removed = shapes[i];
+      shapes.splice(i, 1);
+      if (removed.id) {
+        for (const s of shapes) {
+          if (s.startBound === removed.id) delete s.startBound;
+          if (s.endBound === removed.id) delete s.endBound;
+        }
+      }
+      render();
+      return;
+    }
+  }
+}
+
+function shapeContains(s, x, y) {
+  const tol = 12;
+  if (s.type === 'pen' || s.type === 'highlighter') {
+    const r = s.type === 'highlighter' ? highlightWidth / 2 : tol;
+    return s.points.some(p => Math.hypot(p.x - x, p.y - y) < r);
+  }
+  if (s.type === 'line' || s.type === 'arrow') {
+    const { start, end } = resolveEndpoints(s);
+    return distToSegment({ x, y }, start, end) < tol;
+  }
+  if (s.type === 'rect' || s.type === 'ellipse') {
+    const box = boxFromStartEnd(s);
+    if (s.type === 'ellipse') {
+      const rx = Math.max(1, box.w / 2) + tol, ry = Math.max(1, box.h / 2) + tol;
+      const cx = box.x + box.w / 2, cy = box.y + box.h / 2;
+      const dx = (x - cx) / rx, dy = (y - cy) / ry;
+      return dx * dx + dy * dy <= 1.1;
+    }
+    return x >= box.x - tol && x <= box.x + box.w + tol && y >= box.y - tol && y <= box.y + box.h + tol;
+  }
+  if (s.type === 'text') {
+    const box = getShapeBox(s);
+    return x >= box.x - tol && x <= box.x + box.w + tol && y >= box.y - tol && y <= box.y + box.h + tol;
+  }
+  return false;
+}
+function distToSegment(p, a, b) {
+  const dx = b.x - a.x, dy = b.y - a.y;
+  if (dx === 0 && dy === 0) return Math.hypot(p.x - a.x, p.y - a.y);
+  const t = Math.max(0, Math.min(1, ((p.x - a.x) * dx + (p.y - a.y) * dy) / (dx * dx + dy * dy)));
+  return Math.hypot(p.x - (a.x + t * dx), p.y - (a.y + t * dy));
+}
+
+/* ---- Texto ---- */
+function spawnTextInput(x, y) {
+  const input = document.createElement('div');
+  input.className = 'draw-text-input';
+  input.style.left = x + 'px';
+  input.style.top = y + 'px';
+  input.style.color = drawColor;
+  input.contentEditable = 'true';
+  document.body.appendChild(input);
+  setTimeout(() => input.focus(), 0);
+  const commit = () => {
+    const text = input.textContent.replace(/​/g, '').trim();
+    if (text) getShapes().push({ id: ++shapeIdCounter, type: 'text', pos: { x, y }, text, color: drawColor, size: 28 });
+    input.remove();
+    render();
+  };
+  input.addEventListener('blur', commit);
+  input.addEventListener('keydown', (e) => {
+    e.stopPropagation();
+    if ((e.key === 'Enter' && !e.shiftKey) || e.key === 'Escape') {
+      e.preventDefault();
+      input.blur();
+    }
+  });
+}
+
+/* ---- Cursor dot ---- */
+function updateCursorDot(x, y) {
+  if (tool === 'select') return;
+  cursorDot.style.left = x + 'px';
+  cursorDot.style.top = y + 'px';
+  cursorDot.style.opacity = '1';
+  if (tool === 'eraser') {
+    Object.assign(cursorDot.style, { background: 'transparent', border: '2px solid #fff', width: '28px', height: '28px', borderRadius: '50%' });
+  } else if (tool === 'text') {
+    Object.assign(cursorDot.style, { background: drawColor, border: 'none', width: '3px', height: '24px', borderRadius: '1px' });
+  } else if (tool === 'highlighter') {
+    Object.assign(cursorDot.style, { background: drawColor, border: '1px solid rgba(255,255,255,0.4)', borderRadius: '50%', width: highlightWidth + 'px', height: highlightWidth + 'px', opacity: '0.5' });
+  } else {
+    const size = (tool === 'pen' ? lineWidth : shapeWidth) * 2.6;
+    Object.assign(cursorDot.style, { background: drawColor, border: 'none', borderRadius: '50%', width: size + 'px', height: size + 'px' });
+  }
+}
+
+/* ---- Undo / Delete ---- */
+function undo() {
+  const shapes = getShapes();
+  shapes.pop();
+  selected = null;
+  render();
+}
+function deleteSelected() {
+  if (!selected) return;
+  const shapes = getShapes();
+  const idx = shapes.indexOf(selected);
+  if (idx < 0) return;
+  const removedId = selected.id;
+  shapes.splice(idx, 1);
+  if (removedId) {
+    for (const s of shapes) {
+      if (s.startBound === removedId) delete s.startBound;
+      if (s.endBound === removedId) delete s.endBound;
+    }
+  }
+  selected = null;
+  render();
+}
+
+/* ---- Toolbar handlers ---- */
+function setTool(t) {
+  tool = t;
+  document.body.classList.toggle('select-mode', t === 'select');
+  document.querySelectorAll('#drawToolbar [data-tool]').forEach(b =>
+    b.classList.toggle('active', b.dataset.tool === t)
+  );
+  if (t !== 'select') {
+    selected = null;
+    interaction = null;
+  }
+  canvas.style.cursor = '';
+  render();
+}
+document.querySelectorAll('#drawToolbar [data-tool]').forEach(b => {
+  b.onclick = () => setTool(b.dataset.tool);
+});
+document.querySelectorAll('#drawToolbar .swatch').forEach(b => {
+  b.onclick = () => {
+    document.querySelectorAll('#drawToolbar .swatch').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    drawColor = b.dataset.color;
+    if (selected) { selected.color = drawColor; render(); }
+  };
+});
+document.getElementById('drawUndo').onclick = undo;
+document.getElementById('drawClear').onclick = clearSlideDrawing;
+document.getElementById('drawClose').onclick = toggleDraw;
+
+// Ao trocar de slide: renderiza shapes do novo slide
+const _goTo = goTo;
+goTo = function (i, o) { selected = null; interaction = null; _goTo(i, o); render(); };
+
+/* ============================================================
+   LASER POINTER — com rastro (estilo Google Slides)
+   ============================================================ */
+const laserCanvas = document.getElementById('laserCanvas');
+const lctx = laserCanvas.getContext('2d');
+function resizeLaser() {
+  laserCanvas.width = window.innerWidth;
+  laserCanvas.height = window.innerHeight;
+}
+resizeLaser();
+window.addEventListener('resize', resizeLaser);
+
+let laserPoints = [];
+let laserAnimating = false;
+const LASER_TTL = 700; // ms
+
+function toggleLaser() {
+  document.body.classList.toggle('laser');
+  if (!document.body.classList.contains('laser')) {
+    laserPoints = [];
+    lctx.clearRect(0, 0, laserCanvas.width, laserCanvas.height);
+  }
+}
+
+document.addEventListener('pointermove', (e) => {
+  if (!document.body.classList.contains('laser')) return;
+  laserPoints.push({ x: e.clientX, y: e.clientY, t: performance.now() });
+  if (laserPoints.length > 80) laserPoints.shift();
+  if (!laserAnimating) { laserAnimating = true; requestAnimationFrame(animateLaser); }
+});
+
+function animateLaser() {
+  const now = performance.now();
+  laserPoints = laserPoints.filter(p => now - p.t < LASER_TTL);
+  lctx.clearRect(0, 0, laserCanvas.width, laserCanvas.height);
+
+  if (laserPoints.length === 0) {
+    laserAnimating = false;
+    return;
+  }
+
+  // Rastro: linhas conectadas com largura e opacidade decrescentes
+  lctx.lineCap = 'round';
+  lctx.lineJoin = 'round';
+  for (let i = 1; i < laserPoints.length; i++) {
+    const p0 = laserPoints[i - 1], p1 = laserPoints[i];
+    const age = (now - p1.t) / LASER_TTL;
+    const alpha = Math.pow(1 - age, 1.5);
+    const width = (1 - age) * 10 + 1.5;
+    lctx.strokeStyle = `rgba(212, 245, 66, ${alpha * 0.85})`;
+    lctx.lineWidth = width;
+    lctx.beginPath();
+    lctx.moveTo(p0.x, p0.y);
+    lctx.lineTo(p1.x, p1.y);
+    lctx.stroke();
+  }
+
+  // Glow no rastro (passa de novo mais fino e branquinho)
+  for (let i = 1; i < laserPoints.length; i++) {
+    const p0 = laserPoints[i - 1], p1 = laserPoints[i];
+    const age = (now - p1.t) / LASER_TTL;
+    const alpha = Math.pow(1 - age, 2.5);
+    lctx.strokeStyle = `rgba(255, 255, 255, ${alpha * 0.5})`;
+    lctx.lineWidth = Math.max(0.5, (1 - age) * 3);
+    lctx.beginPath();
+    lctx.moveTo(p0.x, p0.y);
+    lctx.lineTo(p1.x, p1.y);
+    lctx.stroke();
+  }
+
+  // Cabeça do laser
+  const head = laserPoints[laserPoints.length - 1];
+  const headGrad = lctx.createRadialGradient(head.x, head.y, 0, head.x, head.y, 22);
+  headGrad.addColorStop(0, 'rgba(255,255,255,1)');
+  headGrad.addColorStop(0.25, 'rgba(212,245,66,0.95)');
+  headGrad.addColorStop(0.6, 'rgba(212,245,66,0.3)');
+  headGrad.addColorStop(1, 'rgba(212,245,66,0)');
+  lctx.fillStyle = headGrad;
+  lctx.beginPath();
+  lctx.arc(head.x, head.y, 22, 0, Math.PI * 2);
+  lctx.fill();
+
+  requestAnimationFrame(animateLaser);
+}
+
+/* ============================================================
+   NOTAS DO PALESTRANTE
+   ============================================================ */
+const notesEl = document.getElementById('notes');
+function toggleNotes() { notesEl.classList.toggle('open'); }
+function updateNotes() {
+  notesEl.querySelector('.notes-content').textContent = slides[current].dataset.notes || '';
+}
+
+/* ============================================================
+   EDIÇÃO DE CÓDIGO AO VIVO
+   ============================================================ */
+function toggleEdit(btn) {
+  const pre = btn.closest('.slide').querySelector('pre');
+  if (!pre) return;
+  const editing = pre.classList.toggle('editable');
+  pre.setAttribute('contenteditable', editing);
+  btn.classList.toggle('editing', editing);
+  btn.textContent = editing ? 'Sair da edição' : 'Editar ao vivo (E)';
+  if (editing) pre.focus();
+  else if (window.Prism) Prism.highlightAllUnder(pre.parentElement);
+}
+function toggleEditOnCurrent() {
+  const btn = slides[current].querySelector('.btn-edit');
+  if (btn) toggleEdit(btn);
+}
+
+/* ============================================================
+   QR CODE
+   ============================================================ */
+const qrEl = document.getElementById('qr');
+function toggleQR() {
+  qrEl.classList.toggle('open');
+  updateQR();
+}
+function updateQR() {
+  if (!qrEl.classList.contains('open')) return;
+  const url = location.href;
+  qrEl.querySelector('img').src =
+    'https://api.qrserver.com/v1/create-qr-code/?size=180x180&margin=0&data=' + encodeURIComponent(url);
+}
+
+/* ============================================================
+   TIMER DE EXERCÍCIO
+   ============================================================ */
+const timerEl = document.getElementById('timer');
+const timeDisplay = timerEl.querySelector('.time');
+let timerSeconds = 300;
+let timerInterval = null;
+let timerPaused = false;
+
+function formatTime(s) {
+  const m = Math.floor(s / 60), sec = s % 60;
+  return String(m).padStart(2, '0') + ':' + String(sec).padStart(2, '0');
+}
+
+function toggleTimer() {
+  if (timerEl.classList.contains('open')) {
+    closeTimer();
+  } else {
+    startTimer(300);
+  }
+}
+
+function startTimer(seconds) {
+  timerSeconds = seconds;
+  timerPaused = false;
+  timerEl.classList.add('open');
+  timerEl.classList.remove('warning', 'done');
+  timeDisplay.textContent = formatTime(timerSeconds);
+  clearInterval(timerInterval);
+  timerInterval = setInterval(() => {
+    if (timerPaused) return;
+    timerSeconds--;
+    timeDisplay.textContent = formatTime(Math.max(0, timerSeconds));
+    if (timerSeconds <= 30) timerEl.classList.add('warning');
+    if (timerSeconds <= 0) {
+      clearInterval(timerInterval);
+      timerEl.classList.remove('warning');
+      timerEl.classList.add('done');
+    }
+  }, 1000);
+}
+
+function closeTimer() {
+  clearInterval(timerInterval);
+  timerEl.classList.remove('open', 'warning', 'done');
+}
+
+document.getElementById('timerToggle').onclick = () => { timerPaused = !timerPaused; };
+document.getElementById('timerClose').onclick = closeTimer;
+
+/* ============================================================
+   CHEATSHEET / OVERLAYS
+   ============================================================ */
+const helpEl = document.getElementById('cheatsheet');
+function toggleHelp() { helpEl.classList.toggle('open'); }
+function closeOverlays() {
+  helpEl.classList.remove('open');
+  gridEl.classList.remove('open');
+  notesEl.classList.remove('open');
+  qrEl.classList.remove('open');
+  // Modo desenho NÃO sai com Esc — só com D ou pelo botão X (Esc volta pra mão)
+  if (document.body.classList.contains('laser')) toggleLaser();
+}
+
+/* ============================================================
+   BOOT
+   ============================================================ */
+setSlideChrome();
+buildGrid();
+bootFromHash();
+window.addEventListener('hashchange', bootFromHash);
+
+// Prism re-highlight after dom is built
+if (window.Prism) Prism.highlightAll();
+</script>
+</body>
+</html>
