@@ -2,9 +2,11 @@
 
 ## Apresentações de aulas
 
-### ❌ NÃO usar slide de agenda/sumário do módulo
+### ❌ Aulas são móveis: nunca referenciar posição (módulo / número da aula)
 
-**Regra:** não criar slides que listam todas as aulas do módulo (estilo "Você está aqui").
+**Regra:** **NÃO** mencionar em NENHUM slide o número do módulo, número da aula,
+nem listar outras aulas do módulo. Nada de "Módulo 01 · Aula 02", "Aula 03 · Módulo 01",
+"Fechamos o módulo 01", "Próximo: Módulo 02", "— Aula 01", etc.
 
 **Por quê:**
 Aulas são móveis. Uma aula pode:
@@ -13,18 +15,23 @@ Aulas são móveis. Uma aula pode:
 - Ter o módulo renumerado
 - Sair de ordem
 
-Se a aula gravada tiver um slide com o sumário, o vídeo fica congelado a uma estrutura
-que vai mudar. Mais barato manter cada aula auto-suficiente.
+Se a aula gravada tiver QUALQUER referência à sua posição numérica, o vídeo fica
+congelado a uma estrutura que vai mudar. Mais barato manter cada aula auto-suficiente
+e referenciar por TÓPICO/TEMA, nunca por número.
 
 **Como aplicar ao criar uma aula nova:**
-- Pular do slide de capa direto pro conteúdo (quote de abertura, recap da aula anterior, ou primeiro tópico).
-- Não inserir nada com `data-type="agenda"` listando aulas do módulo.
-- Pode usar `data-type="agenda"` pra agenda INTERNA da aula (ex: "vamos passar por 3 tópicos hoje") — desde que não cite outras aulas.
+- **Capa:** sem eyebrow tipo "Módulo 01 · Aula 02". H1 + lead, e opcionalmente
+  o `module-tag` com algo neutro tipo "Protótipo Funcional · por Nanda Dias".
+- **Próxima aula:** referenciar pelo TÍTULO/TEMA, nunca por número.
+  Ex: "Próximo: Os 4 níveis de protótipo" — não "Próximo: Aula 02".
+- **Recap da aula anterior:** "Da aula anterior" / "Vimos que..." — nunca "— Aula 01".
+- **Encerramento:** "Fim de um capítulo" / "Fechamos os princípios" — nunca "Fechamos o módulo 01".
+- **Agenda do módulo:** proibido (slide listando aulas do módulo com "Você está aqui").
+- **Agenda interna da própria aula:** OK (ex: "vamos passar por 3 tópicos hoje"),
+  desde que não cite outras aulas/módulos.
 
-**O que substitui:**
-- Quote de abertura logo após a capa
-- Recap da aula anterior em uma frase
-- Bullet point reveal com o que vai ser visto NESTA aula
+**Em data-notes (anotações do palestrante):** referências numéricas estão OK porque
+não viram parte do vídeo gravado.
 
 ---
 
