@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Aula 03 — O framework de decisão · Protótipo Funcional</title>
+<meta name="theme-color" content="#1c1c1c">
+<meta name="color-scheme" content="dark">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800;900&family=Kode+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-tomorrow.min.css">
+<link rel="stylesheet" href="../template-apresentacao/deck.css">
+</head>
+<body>
+
+<main id="deck">
+
+  <!-- 1 — Capa -->
+  <section class="slide" data-type="cover" data-notes="A tese da aula: sem framework, você sempre cai no nível que está acostumada — não no nível que o problema pede.">
+    <span class="eyebrow">Módulo 01 · Aula 03</span>
+    <h1>O <span class="accent">framework</span> de decisão</h1>
+    <p class="lead">5 perguntas pra escolher o nível certo, sem chutar.</p>
+    <div class="module-tag">Protótipo Funcional · por Nanda Dias</div>
+  </section>
+
+  <!-- 2 — Agenda -->
+  <section class="slide" data-type="agenda" data-notes="Estamos a 2 aulas do fim do módulo.">
+    <div class="slide-header">
+      <span class="eyebrow">Módulo 01 — Princípios e framework</span>
+      <h2>Onde estamos</h2>
+    </div>
+    <div class="agenda">
+      <div class="agenda-item done"><span class="agenda-num">01</span><span class="agenda-title">Por que protótipo estático não basta mais</span></div>
+      <div class="agenda-item done"><span class="agenda-num">02</span><span class="agenda-title">Os 4 níveis de protótipo</span></div>
+      <div class="agenda-item current"><span class="agenda-num">03</span><span class="agenda-title">O framework de decisão</span><span class="agenda-status">Você está aqui</span></div>
+      <div class="agenda-item"><span class="agenda-num">04</span><span class="agenda-title">Os 3 erros que designers cometem ao prototipar com IA</span></div>
+    </div>
+  </section>
+
+  <!-- 3 — Quote -->
+  <section class="slide" data-type="quote" data-notes="Familiaridade é o vício mais comum do designer. Esse é o ponto da aula.">
+    <blockquote>Sem critério, você vai pro Figma. Por familiaridade, não por escolha.</blockquote>
+  </section>
+
+  <!-- 4 — Os dois extremos -->
+  <section class="slide" data-type="bullets" data-notes="Os dois lados do mesmo problema: não decidir.">
+    <div class="slide-header">
+      <span class="eyebrow">Por que precisa de framework</span>
+      <h2>Os dois extremos que <span class="accent">matam o design</span></h2>
+    </div>
+    <ul class="bullets revealed">
+      <li><strong>Sempre nível 1:</strong> você se contenta com o que dá pra fazer no Figma.</li>
+      <li><strong>Sempre nível 4:</strong> você overengeneera o que era pra ser um esboço.</li>
+      <li><strong>Framework</strong> = critério pra escolher caso a caso.</li>
+    </ul>
+  </section>
+
+  <!-- 5 — As 5 perguntas -->
+  <section class="slide" data-type="bullets" data-reveal="true" data-notes="Revele uma a uma. Cada pergunta vai ter seu slide de exploração.">
+    <div class="slide-header">
+      <span class="eyebrow">O framework</span>
+      <h2>As <span class="accent">5 perguntas</span></h2>
+    </div>
+    <ul class="bullets">
+      <li><strong>1.</strong> O que estou validando?</li>
+      <li><strong>2.</strong> Quem vai usar o protótipo?</li>
+      <li><strong>3.</strong> O dado real muda o desenho?</li>
+      <li><strong>4.</strong> O erro custa caro?</li>
+      <li><strong>5.</strong> Quanto tempo eu tenho?</li>
+    </ul>
+  </section>
+
+  <!-- 6 — Pergunta 1 -->
+  <section class="slide" data-type="bullets" data-notes="A pergunta mais importante. Define a categoria de problema. Visual e fluxo cabem nos níveis baixos. Comportamento e experiência exigem os altos.">
+    <div class="slide-header">
+      <span class="eyebrow">Pergunta 1</span>
+      <h2>O que estou <span class="accent">validando?</span></h2>
+    </div>
+    <ul class="bullets revealed">
+      <li><strong>Visual</strong> (hierarquia, contraste, marca) → Nível 1</li>
+      <li><strong>Fluxo</strong> (caminho, onboarding, navegação) → Nível 2</li>
+      <li><strong>Comportamento</strong> (interação, motion, feedback) → Nível 3</li>
+      <li><strong>Experiência</strong> (dado real, ponta a ponta, edge case) → Nível 4</li>
+    </ul>
+  </section>
+
+  <!-- 7 — Pergunta 2 -->
+  <section class="slide" data-type="bullets" data-notes="Quanto mais 'externo' o público, mais alto o nível precisa estar. Usuário não tolera tela morta.">
+    <div class="slide-header">
+      <span class="eyebrow">Pergunta 2</span>
+      <h2>Quem vai <span class="accent">usar</span> o protótipo?</h2>
+    </div>
+    <ul class="bullets revealed">
+      <li><strong>Você mesma</strong> (pra pensar): 1–2</li>
+      <li><strong>Time de produto</strong> (pra alinhar): 2–3</li>
+      <li><strong>Usuário em teste</strong> (pra validar): 3–4</li>
+      <li><strong>Stakeholder cético</strong> (pra convencer): 4 — precisa ver rodar</li>
+    </ul>
+  </section>
+
+  <!-- 8 — Pergunta 3 -->
+  <section class="slide" data-type="compare" data-notes="Se o dado real muda o desenho, lorem ipsum mente. Você só vê o problema quando o dado bate.">
+    <div class="slide-header">
+      <span class="eyebrow">Pergunta 3</span>
+      <h2>O <span class="accent">dado real</span> muda o desenho?</h2>
+    </div>
+    <div class="compare">
+      <div class="compare-side bad">
+        <span class="tag">● NÃO</span>
+        <h3>Nível 1–2 basta</h3>
+        <p>Telas de marketing, dashboard estático, fluxo de cadastro simples. O lorem ipsum não esconde nada.</p>
+      </div>
+      <div class="compare-side good">
+        <span class="tag">● SIM</span>
+        <h3>Nível 3–4 obrigatório</h3>
+        <p>Listas, filtros, busca, conteúdo gerado por IA, feed, qualquer coisa que muda com o que o usuário fez antes. Sem dado real, você está projetando uma fantasia.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9 — Pergunta 4 -->
+  <section class="slide" data-type="bullets" data-notes="Quanto maior o custo de errar, mais alto o nível compensa. O cálculo é simples — só que ninguém faz.">
+    <div class="slide-header">
+      <span class="eyebrow">Pergunta 4</span>
+      <h2>O <span class="accent">erro</span> custa caro?</h2>
+    </div>
+    <ul class="bullets revealed">
+      <li><strong>Erro visual</strong> = revert em 10 minutos → 1–2 basta</li>
+      <li><strong>Erro de fluxo</strong> = retrabalho em sprint → suba pra 3–4</li>
+      <li><strong>Erro em produção</strong> = incidente, suporte, reputação → 4 obrigatório</li>
+    </ul>
+  </section>
+
+  <!-- 10 — Pergunta 5 -->
+  <section class="slide" data-type="chart" data-notes="Os números viraram. Com IA, nível 4 cabe em 1 dia. Sem IA, era 1 semana. O cálculo do esforço mudou — mas a maioria ainda usa a tabela antiga.">
+    <div class="slide-header">
+      <span class="eyebrow">Pergunta 5</span>
+      <h2>Quanto <span class="accent">tempo</span> eu tenho?</h2>
+    </div>
+    <div class="chart-wrap">
+      <div class="chart-row"><span class="chart-label">30 min</span><div class="chart-bar"><div class="chart-fill" style="width:18%"></div></div><span class="chart-value">N1</span></div>
+      <div class="chart-row"><span class="chart-label">2 horas</span><div class="chart-bar"><div class="chart-fill" style="width:40%"></div></div><span class="chart-value">N2</span></div>
+      <div class="chart-row"><span class="chart-label">1 dia</span><div class="chart-bar"><div class="chart-fill" style="width:75%"></div></div><span class="chart-value">N3–N4</span></div>
+      <div class="chart-row"><span class="chart-label">1 semana</span><div class="chart-bar"><div class="chart-fill" style="width:98%"></div></div><span class="chart-value">N4 polido</span></div>
+    </div>
+  </section>
+
+  <!-- 11 — Quote: regra simples -->
+  <section class="slide" data-type="quote" data-notes="O atalho que substitui o framework quando não dá tempo de pensar nas 5 perguntas. Custa pouco. Devolve muito.">
+    <blockquote>Quando em dúvida, sobe 1 nível.</blockquote>
+  </section>
+
+  <!-- 12 — Aplicando: 3 casos -->
+  <section class="slide" data-type="bullets" data-notes="Aterriza o framework em casos concretos do dia a dia de design. A turma vai reconhecer todos.">
+    <div class="slide-header">
+      <span class="eyebrow">Aplicando</span>
+      <h2>3 casos <span class="accent">práticos</span></h2>
+    </div>
+    <ul class="bullets revealed">
+      <li><strong>Redesign de empty state</strong> → visual, sem dado real → <span class="accent">Nível 1</span></li>
+      <li><strong>Novo fluxo de onboarding</strong> → comportamento, usuário externo → <span class="accent">Nível 3 ou 4</span></li>
+      <li><strong>Feature de IA</strong> → dado real é central, sem ele não dá pra projetar → <span class="accent">Nível 4 sempre</span></li>
+    </ul>
+  </section>
+
+  <!-- 13 — Hands-on canvas -->
+  <section class="slide" data-type="canvas" data-notes="Pause. Peça um caso real da turma. Aplique as 5 perguntas no quadro. Rabisque junto.">
+    <span class="canvas-label">Hands-on · aplique nas 5 perguntas</span>
+    <div class="canvas-hint">
+      Traga um caso real e rode aqui.
+      <span>Aperta D · 1 pincel · 2 marca-texto · 6 texto</span>
+    </div>
+  </section>
+
+  <!-- 14 — Próxima aula -->
+  <section class="slide" data-type="cover" data-notes="Última aula do módulo: cuidados com IA. Depois disso a gente vai pra mão na massa (Módulo 02).">
+    <span class="eyebrow">Próxima aula</span>
+    <h1>Os <span class="accent">3 erros</span><br>com IA</h1>
+    <p class="lead">Cometi todos. Pra você não cometer.</p>
+    <div class="module-tag">Aula 04 · Módulo 01</div>
+  </section>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-core.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+<script src="../template-apresentacao/deck.js"></script>
+</body>
+</html>
