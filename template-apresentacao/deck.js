@@ -161,6 +161,8 @@ function goTo(i, opts = {}) {
   if (slides[current].dataset.type === 'case-study') {
     resetCaseSlide(slides[current]);
   }
+  // Reset prompt-evolution ao entrar — limpa todo o texto digitado
+  resetPromptEvolution(slides[current]);
   // Reset quote-reveal ao entrar — frase se vier do anterior, imagem se voltando
   if (slides[current].dataset.type === 'quote-reveal') {
     slides[current].dataset.revealed = direction === 'back' ? 'true' : 'false';
@@ -216,6 +218,17 @@ function next() {
       return;
     }
   }
+  const promptEvol = slide.querySelector('.prompt-evolution');
+  if (promptEvol) {
+    const targets = Array.from(promptEvol.querySelectorAll('.prompt-text'));
+    const nextTarget = targets.find(t => !t.dataset.done);
+    const stillTyping = targets.find(t => t.classList.contains('typing'));
+    if (stillTyping) return; // ignora se ainda tá digitando
+    if (nextTarget) {
+      typewritePrompt(nextTarget);
+      return;
+    }
+  }
   if (slide.dataset.reveal === 'true') {
     const bullets = slide.querySelectorAll('.bullets li, .phones .phone, .trio-cards .trio-card');
     if (revealedBullets < bullets.length) {
@@ -263,7 +276,46 @@ function prev() {
       return;
     }
   }
+  const promptEvolPrev = slide.querySelector('.prompt-evolution');
+  if (promptEvolPrev) {
+    const done = Array.from(promptEvolPrev.querySelectorAll('.prompt-text')).filter(t => t.dataset.done);
+    if (done.length > 0) {
+      const last = done[done.length - 1];
+      last.textContent = '';
+      last.classList.remove('typing');
+      delete last.dataset.done;
+      return;
+    }
+  }
   goTo(current - 1);
+}
+
+function typewritePrompt(el) {
+  const text = el.dataset.prompt || '';
+  el.classList.add('typing');
+  el.textContent = '';
+  let i = 0;
+  function step() {
+    if (i < text.length) {
+      el.textContent += text[i];
+      i++;
+      setTimeout(step, 22 + Math.random() * 28);
+    } else {
+      el.classList.remove('typing');
+      el.dataset.done = 'true';
+    }
+  }
+  step();
+}
+
+function resetPromptEvolution(slide) {
+  const evol = slide.querySelector('.prompt-evolution');
+  if (!evol) return;
+  evol.querySelectorAll('.prompt-text').forEach(t => {
+    t.textContent = '';
+    t.classList.remove('typing');
+    delete t.dataset.done;
+  });
 }
 
 function resetCaseSlide(slide) {
