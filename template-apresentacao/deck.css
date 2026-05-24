@@ -60,6 +60,25 @@
   .bullets.statements li::before{display:none}
   .bullets.statements li strong{color:var(--accent);font-weight:700}
 
+  /* Layout: split — texto à esquerda + imagem à direita */
+  .slide-split{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:56px;align-items:center;width:100%;flex:1;min-height:0}
+  .split-text{display:flex;flex-direction:column;justify-content:center;min-width:0;min-height:0}
+  .split-text .slide-header{margin-bottom:32px}
+  .split-image{display:flex;align-items:center;justify-content:center;min-height:0;height:100%;max-height:75vh;border-radius:var(--radius);position:relative}
+  .split-image img{max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;border-radius:var(--radius)}
+  .split-image:not(:has(img))::before{content:attr(data-placeholder);display:flex;align-items:center;justify-content:center;width:100%;height:100%;min-height:320px;background:var(--bg-card);border:1px dashed var(--border-light);border-radius:var(--radius);color:var(--text-mute);font-family:'Kode Mono',monospace;font-size:12px;letter-spacing:0.14em;text-transform:uppercase}
+
+  /* Modificador: levels — cada item vira card claro com peso menor que o título */
+  .bullets.levels{gap:16px;max-width:920px;width:100%;align-items:stretch}
+  .bullets.levels li{
+    background:var(--text-cream);color:#1c1c1c;
+    padding:22px 28px;border-radius:var(--radius);
+    font-size:22px;font-weight:400;letter-spacing:-0.005em;line-height:1.35;
+    padding-left:28px;text-align:left;width:100%;max-width:none
+  }
+  .bullets.levels li::before{display:none}
+  .bullets.levels li strong{color:#1c1c1c;font-weight:700}
+
   /* TIPO: código */
   .slide[data-type="code"] pre{margin:0;background:var(--bg-card)!important;border:1px solid var(--border);border-radius:var(--radius);padding:28px 32px;font-family:'Kode Mono',monospace;font-size:16px;line-height:1.6;overflow:auto;max-height:60vh}
   .slide[data-type="code"] code{font-family:'Kode Mono',monospace!important}
