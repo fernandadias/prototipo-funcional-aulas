@@ -23,72 +23,109 @@
     <p class="lead">Tem hora que imaginar não é o suficiente... Tem que funcionar!</p>
     <div class="module-tag">Protótipo Funcional · por Nanda Dias</div>
   </section>
-  <!-- 3 — Quote de abertura -->
-  <section class="slide" data-type="quote" data-notes="Deixe respirar. Repita devagar. Esse é o argumento central da aula.">
-    <blockquote>Imagina que...</blockquote>
+
+  <!-- 2 — Imagem de abertura "Imagina que..." -->
+  <section class="slide" data-type="image" data-notes="Deixe respirar. Esse é o gancho central da aula.">
+    <img src="imagina-que.png" alt="Imagina que...">
+  </section>
+
+  <!-- 3 — Três exemplos de produtos vivos (reveal um a um) -->
+  <section class="slide" data-type="bullets" data-reveal="true" data-notes="Três produtos que você usa todo dia. Avance com Space/→ para revelar um celular por vez: Duolingo, Spotify, Airbnb. Nenhum é mockup estático — todos respondem, animam, mudam de estado. É isso que estamos perseguindo.">
+    <div class="slide-header">
+      <span class="eyebrow">Produtos vivos</span>
+      <h2>O que <span class="accent">funcional</span> parece na prática</h2>
+    </div>
+    <div class="phones">
+      <div class="phone">
+        <div class="phone-frame">
+          <video src="duolingo.mp4" autoplay loop muted playsinline></video>
+        </div>
+        <span class="phone-label">Duolingo</span>
+      </div>
+      <div class="phone">
+        <div class="phone-frame">
+          <video src="spotify.mp4" autoplay loop muted playsinline></video>
+        </div>
+        <span class="phone-label">Spotify</span>
+      </div>
+      <div class="phone">
+        <div class="phone-frame">
+          <video src="airbnb.mp4" autoplay loop muted playsinline></video>
+        </div>
+        <span class="phone-label">Airbnb</span>
+      </div>
+    </div>
   </section>
 
   <!-- 4 — Linha do tempo (lateral, 8 paradas) -->
-  <section class="slide" data-type="timeline" data-active-stop="0" data-notes="Avança com Space/→ — cada parada centraliza. 8 paradas no total. Use pra contar a história longa do design: da fábrica até a IA. Imagens são placeholders — substitua os <img src> quando tiver os assets.">
+  <section class="slide" data-type="timeline" data-active-stop="-1" data-notes="Primeiro clique sai do intro (título + meter no centro) e revela a timeline. Depois avança com Space/→ — cada parada centraliza. 8 paradas no total.">
     <div class="slide-header">
       <span class="eyebrow">Linha do tempo</span>
-      <h2>Como o trabalho de design <span class="accent">mudou</span></h2>
+      <h2>Um pouco de <span class="accent">história</span></h2>
     </div>
     <div class="timeline-stage">
       <div class="timeline-viewport">
         <div class="timeline-track">
 
-          <div class="timeline-stop">
-            <div class="stop-image"><span>imagem · fábrica</span></div>
+          <div class="timeline-stop" data-focus="70,30,0,0">
+            <div class="stop-purpose"><span class="arrow">→</span> PARA: a máquina e o processo</div>
+            <div class="stop-image"><img src="timeline-01.jpg" alt="A máquina dita o ritmo"></div>
             <span class="stop-period">1760–1900</span>
             <h3 class="stop-title">A máquina dita o ritmo</h3>
             <p class="stop-desc">O operário se molda à máquina, não o contrário.</p>
           </div>
 
-          <div class="timeline-stop">
-            <div class="stop-image"><span>imagem · taylorismo</span></div>
+          <div class="timeline-stop" data-focus="35,65,0,0">
+            <div class="stop-purpose"><span class="arrow">→</span> PARA: extrair mais do processo</div>
+            <div class="stop-image"><img src="timeline-02.jpg" alt="O cronômetro"></div>
             <span class="stop-period">1900–1940</span>
             <h3 class="stop-title">O cronômetro</h3>
             <p class="stop-desc">O engenheiro projeta o movimento exato do corpo.</p>
           </div>
 
-          <div class="timeline-stop">
-            <div class="stop-image"><span>imagem · ergonomia</span></div>
+          <div class="timeline-stop" data-focus="25,40,35,0">
+            <div class="stop-purpose"><span class="arrow">→</span> PARA: reduzir o erro humano</div>
+            <div class="stop-image"><img src="timeline-03.jpg" alt="O erro deixou de ser humano"></div>
             <span class="stop-period">1940–1970</span>
             <h3 class="stop-title">O erro deixou de ser humano</h3>
             <p class="stop-desc">O produto considera limitações cognitivas e físicas do humano.</p>
           </div>
 
-          <div class="timeline-stop">
-            <div class="stop-image"><span>imagem · Apple GUI</span></div>
+          <div class="timeline-stop" data-focus="10,30,60,0">
+            <div class="stop-purpose"><span class="arrow">→</span> PARA: reduzir o tempo de aprendizado</div>
+            <div class="stop-image"><img src="timeline-04.jpg" alt="O usuário ganha nome"></div>
             <span class="stop-period">1970–1990</span>
             <h3 class="stop-title">O usuário ganha nome</h3>
             <p class="stop-desc">User Experience na Apple — janelas, ícones, lixeira.</p>
           </div>
 
-          <div class="timeline-stop">
-            <div class="stop-image"><span>imagem · web 1.0</span></div>
+          <div class="timeline-stop" data-focus="5,20,75,0">
+            <div class="stop-purpose"><span class="arrow">→</span> PARA: derrubar a barreira de entrada</div>
+            <div class="stop-image"><img src="timeline-05.jpg" alt="Heurísticas para o clique"></div>
             <span class="stop-period">1990–2007</span>
             <h3 class="stop-title">Heurísticas para o clique</h3>
             <p class="stop-desc">A web exige usabilidade para quem nunca operou um computador.</p>
           </div>
 
-          <div class="timeline-stop">
-            <div class="stop-image"><span>imagem · iPhone</span></div>
+          <div class="timeline-stop" data-focus="0,10,90,0">
+            <div class="stop-purpose"><span class="arrow">→</span> PARA: a experiência como diferencial</div>
+            <div class="stop-image"><img src="timeline-06.jpg" alt="Na palma da mão"></div>
             <span class="stop-period">2007–2017</span>
             <h3 class="stop-title">Na palma da mão</h3>
             <p class="stop-desc">"Centrado no usuário" deixa de ser jargão e vira processo medível.</p>
           </div>
 
-          <div class="timeline-stop">
-            <div class="stop-image"><span>imagem · feed/algoritmo</span></div>
+          <div class="timeline-stop" data-focus="0,0,65,35">
+            <div class="stop-purpose"><span class="arrow">→</span> PARA: a recomendação e os dados</div>
+            <div class="stop-image"><img src="timeline-07.jpg" alt="O algoritmo de recomendação"></div>
             <span class="stop-period">2015–2022</span>
             <h3 class="stop-title">O algoritmo de recomendação</h3>
             <p class="stop-desc">O designer divide a autoria da experiência com modelos.</p>
           </div>
 
-          <div class="timeline-stop">
-            <div class="stop-image"><span>imagem · IA generativa</span></div>
+          <div class="timeline-stop" data-focus="0,0,35,65">
+            <div class="stop-purpose"><span class="arrow">→</span> PARA: a intenção de quem usa</div>
+            <div class="stop-image"><img src="timeline-08.jpg" alt="A intenção vira interface"></div>
             <span class="stop-period">2022–presente</span>
             <h3 class="stop-title">A intenção vira interface</h3>
             <p class="stop-desc">Sai o fluxo desenhado, entra o espaço de possibilidades.</p>
@@ -108,117 +145,100 @@
       </div>
     </div>
     <div class="timeline-counter"><span class="cur-stop accent">01</span> / 08</div>
-  </section>
-
-  <!-- 5 — Quote -->
-  <section class="slide" data-type="quote" data-notes="Frase-âncora da aula. Vai voltar várias vezes no módulo.">
-    <blockquote>Mockup mostra. Protótipo prova.</blockquote>
-  </section>
-
-  <!-- 6 — O que mudou no contexto -->
-  <section class="slide" data-type="bullets" data-reveal="true" data-notes="Por que ESTA é a hora. Quatro forças simultâneas que mudaram o jogo.">
-    <div class="slide-header">
-      <span class="eyebrow">Por que agora</span>
-      <h2>O que mudou no <span class="accent">contexto</span> do produto</h2>
-    </div>
-    <ul class="bullets">
-      <li><strong>IA chegou no produto:</strong> ele responde, aprende, propõe. Não é mais formulário.</li>
-      <li><strong>Estado virou regra:</strong> tudo tem memória, contexto, permissão. Tela parada vira ficção.</li>
-      <li><strong>Times exigem confiança:</strong> ninguém quer dev em cima de "achei que era assim".</li>
-      <li><strong>Stakeholder quer ver rodar:</strong> imaginação vende menos do que demo.</li>
-    </ul>
-  </section>
-
-  <!-- 7 — Compare: estático vs funcional -->
-  <section class="slide" data-type="compare" data-notes="Mostre o paralelo. O custo do estático não é desenhar — é descobrir o problema TARDE.">
-    <div class="slide-header">
-      <span class="eyebrow">O custo do estático</span>
-      <h2>Onde o erro <span class="accent">aparece</span></h2>
-    </div>
-    <div class="compare">
-      <div class="compare-side bad">
-        <span class="tag">● Mockup estático</span>
-        <h3>Prevê comportamento</h3>
-        <p>Você adivinha edge cases. O handoff vira interpretação. Bugs aparecem na dev. O retrabalho aparece quando o custo de mudar é alto.</p>
-        <p style="color:var(--text-mute);font-size:13px">Você só descobre o problema depois que ele virou commit.</p>
-      </div>
-      <div class="compare-side good">
-        <span class="tag">● Protótipo funcional</span>
-        <h3>Prova comportamento</h3>
-        <p>Edge cases aparecem sozinhos. O handoff é referência clara. Bugs aparecem no protótipo. O retrabalho fica em design — onde é barato.</p>
-        <p style="color:var(--text-dim);font-size:13px">O problema aparece enquanto ainda é só seu.</p>
+    <div class="focus-meter">
+      <span class="focus-meter-label">Foco do projeto</span>
+      <div class="focus-bars">
+        <div class="focus-row" data-axis="maq">
+          <div class="focus-row-track"><div class="focus-row-fill"></div></div>
+          <span class="focus-row-label">Máquina</span>
+        </div>
+        <div class="focus-row" data-axis="proc">
+          <div class="focus-row-track"><div class="focus-row-fill"></div></div>
+          <span class="focus-row-label">Processo</span>
+        </div>
+        <div class="focus-row" data-axis="pessoa">
+          <div class="focus-row-track"><div class="focus-row-fill"></div></div>
+          <span class="focus-row-label">Pessoa</span>
+        </div>
+        <div class="focus-row" data-axis="intencao">
+          <div class="focus-row-track"><div class="focus-row-fill"></div></div>
+          <span class="focus-row-label">Intenção</span>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- 8 — O que o Figma não captura -->
-  <section class="slide" data-type="bullets" data-reveal="true" data-notes="Cada bullet conta uma dor real. Quase certeza que a turma já passou por cada uma.">
+  <!-- 5 — Spotlight nas 3 últimas eras (mobile / algoritmo / GenAI) -->
+  <section class="slide" data-type="spotlight" data-active-spot="-1" data-notes="3 cards lado a lado começam neutros. Cada clique destaca um (06 → 07 → 08), revelando 3 bullets do que precisa estar funcional naquela era.">
     <div class="slide-header">
-      <span class="eyebrow">Variabilidade</span>
-      <h2>O que o Figma <span class="accent">não captura</span></h2>
+      <span class="eyebrow">O recorte de hoje</span>
+      <h2>Nossa fotografia <span class="accent">atual</span></h2>
     </div>
-    <ul class="bullets">
-      <li><strong>Loading que demora:</strong> aquele estado entre o clique e o resultado. No Figma some.</li>
-      <li><strong>Erro no meio do fluxo:</strong> a internet caiu na hora do submit. E aí?</li>
-      <li><strong>Permissão diferente por role:</strong> o admin vê. O user não. O guest vê outra coisa.</li>
-      <li><strong>Conteúdo que estoura layout:</strong> nome com 40 caracteres, lista com 0 itens, 200 itens.</li>
-      <li><strong>Combinação de filtros:</strong> seleciona 3 filtros e zera o resultado. O que mostra?</li>
-    </ul>
+    <div class="spotlight-row">
+      <div class="spotlight-card" data-spot="0">
+        <div class="spot-image"><img src="timeline-06.jpg" alt="Na palma da mão"></div>
+        <ul class="spot-bullets">
+          <li>Inputs clássicos</li>
+          <li>Responsividade</li>
+          <li>Feedbacks</li>
+        </ul>
+      </div>
+      <div class="spotlight-card" data-spot="1">
+        <div class="spot-image"><img src="timeline-07.jpg" alt="O algoritmo de recomendação"></div>
+        <ul class="spot-bullets">
+          <li>Dados diversos</li>
+          <li>Adaptação da interface</li>
+          <li>Sensação de quem usa</li>
+        </ul>
+      </div>
+      <div class="spotlight-card" data-spot="2">
+        <div class="spot-image"><img src="timeline-08.jpg" alt="A intenção vira interface"></div>
+        <ul class="spot-bullets">
+          <li>Inputs complexos</li>
+          <li>Jornada subjetiva</li>
+          <li>GenUI</li>
+        </ul>
+      </div>
+    </div>
   </section>
 
-  <!-- 9 — Gráfico (% de coincidência com produto final) -->
-  <section class="slide" data-type="chart" data-notes="Os números são da minha experiência — não estatística. Mas mostra a ordem de grandeza. Quanto maior o nível, menos surpresa na dev.">
+  <!-- 6 — Frase central que revela imagem ao clicar -->
+  <section class="slide" data-type="quote-reveal" data-revealed="false" data-notes="Frase no centro do slide. Primeiro clique faz a frase sumir e a imagem do processo aparecer.">
+    <blockquote class="qr-quote">Não é sobre abandonar o Figma...</blockquote>
+    <img class="qr-image" src="processo-design.png" alt="Processo de design">
+  </section>
+
+  <!-- 7 — Três frentes do protótipo funcional -->
+  <section class="slide" data-type="trio-cards" data-reveal="true" data-notes="Primeiro aparece só o título. Cada clique revela um card (Variabilidade → Estados & Dados → Inputs & Outputs).">
     <div class="slide-header">
-      <span class="eyebrow">Confiança</span>
-      <h2>% do protótipo que <span class="accent">vira produto</span> sem retrabalho</h2>
+      <span class="eyebrow">Protótipo funcional</span>
+      <h2>A gente também fará design com <span class="accent">código</span></h2>
     </div>
-    <div class="chart-wrap">
-      <div class="chart-row"><span class="chart-label">Estático</span><div class="chart-bar"><div class="chart-fill" style="width:30%"></div></div><span class="chart-value">~30%</span></div>
-      <div class="chart-row"><span class="chart-label">Clicável</span><div class="chart-bar"><div class="chart-fill" style="width:50%"></div></div><span class="chart-value">~50%</span></div>
-      <div class="chart-row"><span class="chart-label">Interativo</span><div class="chart-bar"><div class="chart-fill" style="width:75%"></div></div><span class="chart-value">~75%</span></div>
-      <div class="chart-row"><span class="chart-label">Funcional</span><div class="chart-bar"><div class="chart-fill" style="width:95%"></div></div><span class="chart-value">~95%</span></div>
+    <div class="trio-cards">
+      <div class="trio-card">
+        <span class="trio-tag">Variabilidade</span>
+        <div class="trio-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="13" y2="18"/></svg>
+        </div>
+        <h3 class="trio-title">Quando o design muda de acordo com o conteúdo</h3>
+      </div>
+      <div class="trio-card">
+        <span class="trio-tag">Estados &amp; Dados</span>
+        <div class="trio-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="8" ry="2.6"/><path d="M4 5v6c0 1.45 3.58 2.6 8 2.6s8-1.15 8-2.6V5"/><path d="M4 11v6c0 1.45 3.58 2.6 8 2.6s8-1.15 8-2.6v-6"/></svg>
+        </div>
+        <h3 class="trio-title">Quando a interface precisa agir e reagir</h3>
+      </div>
+      <div class="trio-card">
+        <span class="trio-tag">Inputs &amp; Outputs</span>
+        <div class="trio-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="3" x2="12" y2="21"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="5.6" y1="5.6" x2="18.4" y2="18.4"/><line x1="18.4" y1="5.6" x2="5.6" y2="18.4"/></svg>
+        </div>
+        <h3 class="trio-title">Quando projetamos ações além de cliques</h3>
+      </div>
     </div>
   </section>
 
-  <!-- 10 — Quote -->
-  <section class="slide" data-type="quote" data-notes="Outra frase-âncora. Reforça o argumento.">
-    <blockquote>Você não desenha o que pensa. Você prova o que projeta.</blockquote>
-  </section>
-
-  <!-- 11 — O que muda na prática -->
-  <section class="slide" data-type="bullets" data-reveal="true" data-notes="Aterriza o argumento. Concreto. Como muda a semana da pessoa.">
-    <div class="slide-header">
-      <span class="eyebrow">Na sua semana</span>
-      <h2>O que muda <span class="accent">concretamente</span></h2>
-    </div>
-    <ul class="bullets">
-      <li>Você <strong>desenha menos, projeta mais</strong>.</li>
-      <li>Você <strong>briga menos com edge case</strong> na review porque o protótipo já mostra.</li>
-      <li>Você <strong>entrega referência</strong>, não interpretação.</li>
-      <li>Você <strong>testa com usuário</strong> antes do produto existir.</li>
-    </ul>
-  </section>
-
-  <!-- 12 — Não é largar o Figma -->
-  <section class="slide" data-type="bullets" data-notes="Importante: não vire o discurso radical. Figma continua sendo central. A questão é saber quando ele para de servir.">
-    <div class="slide-header">
-      <span class="eyebrow">Importante</span>
-      <h2>Não é sobre <span class="accent">largar o Figma</span></h2>
-    </div>
-    <ul class="bullets revealed">
-      <li>Figma continua sendo onde você <strong>pensa estrutura</strong>.</li>
-      <li>Você sai dele quando o problema <strong>pede comportamento real</strong>.</li>
-      <li>Cada nível de protótipo tem sua ferramenta. Saber escolher é o trabalho.</li>
-    </ul>
-  </section>
-
-  <!-- 13 — Próxima aula -->
-  <section class="slide" data-type="cover" data-notes="Bridge pra aula 2. Os 4 níveis vão dar o vocabulário pra essa escolha.">
-    <span class="eyebrow">Próxima aula</span>
-    <h1>Os <span class="accent">4 níveis</span><br>de protótipo</h1>
-    <p class="lead">Onde cada um para de servir.</p>
-    
-  </section>
 
 </main>
 

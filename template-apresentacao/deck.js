@@ -130,6 +130,7 @@ totalIdx.textContent = total;
 /* --- Navegação --- */
 function goTo(i, opts = {}) {
   i = Math.max(0, Math.min(total - 1, i));
+  const direction = i < current ? 'back' : 'forward';
   slides[current].classList.remove('active');
   current = i;
   slides[current].classList.add('active');
@@ -141,11 +142,24 @@ function goTo(i, opts = {}) {
   updateNotes();
   updateGridActive();
   updateQR();
-  // Reset timeline ao entrar
+  // Reset timeline ao entrar — começa no intro se vier de slide anterior,
+  // ou na última parada se vier de slide posterior (voltando)
   if (slides[current].dataset.type === 'timeline') {
-    slides[current].dataset.activeStop = '0';
+    const stopsCount = slides[current].querySelectorAll('.timeline-stop').length;
+    slides[current].dataset.activeStop = direction === 'back' ? String(stopsCount - 1) : '-1';
     // espera o layout pintar pra calcular offsets corretos
     requestAnimationFrame(() => updateTimeline(slides[current]));
+  }
+  // Reset spotlight ao entrar — nenhum destacado se vier do anterior,
+  // último destacado se vier do posterior
+  if (slides[current].dataset.type === 'spotlight') {
+    const cardsCount = slides[current].querySelectorAll('.spotlight-card').length;
+    slides[current].dataset.activeSpot = direction === 'back' ? String(cardsCount - 1) : '-1';
+    updateSpotlight(slides[current]);
+  }
+  // Reset quote-reveal ao entrar — frase se vier do anterior, imagem se voltando
+  if (slides[current].dataset.type === 'quote-reveal') {
+    slides[current].dataset.revealed = direction === 'back' ? 'true' : 'false';
   }
   // Re-highlight code on slide enter (Prism)
   if (window.Prism) Prism.highlightAllUnder(slides[current]);
@@ -163,15 +177,28 @@ function next() {
   const slide = slides[current];
   if (slide.dataset.type === 'timeline') {
     const stops = slide.querySelectorAll('.timeline-stop');
-    const active = parseInt(slide.dataset.activeStop || '0', 10);
+    const active = parseInt(slide.dataset.activeStop ?? '-1', 10);
     if (active < stops.length - 1) {
       slide.dataset.activeStop = active + 1;
       updateTimeline(slide);
       return;
     }
   }
+  if (slide.dataset.type === 'spotlight') {
+    const cards = slide.querySelectorAll('.spotlight-card');
+    const active = parseInt(slide.dataset.activeSpot ?? '-1', 10);
+    if (active < cards.length - 1) {
+      slide.dataset.activeSpot = active + 1;
+      updateSpotlight(slide);
+      return;
+    }
+  }
+  if (slide.dataset.type === 'quote-reveal' && slide.dataset.revealed !== 'true') {
+    slide.dataset.revealed = 'true';
+    return;
+  }
   if (slide.dataset.reveal === 'true') {
-    const bullets = slide.querySelectorAll('.bullets li');
+    const bullets = slide.querySelectorAll('.bullets li, .phones .phone, .trio-cards .trio-card');
     if (revealedBullets < bullets.length) {
       bullets[revealedBullets].classList.add('revealed');
       revealedBullets++;
@@ -184,12 +211,24 @@ function next() {
 function prev() {
   const slide = slides[current];
   if (slide.dataset.type === 'timeline') {
-    const active = parseInt(slide.dataset.activeStop || '0', 10);
-    if (active > 0) {
+    const active = parseInt(slide.dataset.activeStop ?? '-1', 10);
+    if (active > -1) {
       slide.dataset.activeStop = active - 1;
       updateTimeline(slide);
       return;
     }
+  }
+  if (slide.dataset.type === 'spotlight') {
+    const active = parseInt(slide.dataset.activeSpot ?? '-1', 10);
+    if (active > -1) {
+      slide.dataset.activeSpot = active - 1;
+      updateSpotlight(slide);
+      return;
+    }
+  }
+  if (slide.dataset.type === 'quote-reveal' && slide.dataset.revealed === 'true') {
+    slide.dataset.revealed = 'false';
+    return;
   }
   goTo(current - 1);
 }
@@ -199,17 +238,31 @@ function updateTimeline(slide) {
   const dots = slide.querySelectorAll('.timeline-dot');
   const track = slide.querySelector('.timeline-track');
   const counter = slide.querySelector('.timeline-counter .cur-stop');
-  const active = parseInt(slide.dataset.activeStop || '0', 10);
+  const active = parseInt(slide.dataset.activeStop ?? '-1', 10);
+
+  // Estado intro (active === -1): título + meter centralizados, nenhuma parada/foco ativo
+  slide.classList.toggle('timeline-intro', active === -1);
 
   stops.forEach((s, i) => {
     s.classList.toggle('active', i === active);
-    s.classList.toggle('passed', i < active);
+    s.classList.toggle('passed', i < active && active >= 0);
   });
   dots.forEach((d, i) => {
     d.classList.toggle('active', i === active);
-    d.classList.toggle('passed', i < active);
+    d.classList.toggle('passed', i < active && active >= 0);
   });
-  if (counter) counter.textContent = String(active + 1).padStart(2, '0');
+  if (counter) counter.textContent = active >= 0 ? String(active + 1).padStart(2, '0') : '00';
+
+  if (active === -1) {
+    // zera todas as barras do meter no intro
+    const rows = slide.querySelectorAll('.focus-row');
+    rows.forEach(row => {
+      const fill = row.querySelector('.focus-row-fill');
+      if (fill) fill.style.height = '0%';
+      row.classList.remove('active');
+    });
+    return;
+  }
 
   if (!track || !stops[active]) return;
   const viewport = track.parentElement;
@@ -217,11 +270,28 @@ function updateTimeline(slide) {
   const stopCenter = stop.offsetLeft + stop.offsetWidth / 2;
   const offset = (viewport.offsetWidth / 2) - stopCenter;
   track.style.transform = `translateX(${offset}px)`;
+
+  const focusData = (stops[active].dataset.focus || '').split(',').map(n => parseFloat(n) || 0);
+  if (focusData.length === 4) {
+    const rows = slide.querySelectorAll('.focus-row');
+    const maxVal = Math.max(...focusData);
+    rows.forEach((row, i) => {
+      const fill = row.querySelector('.focus-row-fill');
+      if (fill) fill.style.height = focusData[i] + '%';
+      row.classList.toggle('active', focusData[i] === maxVal && maxVal > 0);
+    });
+  }
+}
+
+function updateSpotlight(slide) {
+  const cards = slide.querySelectorAll('.spotlight-card');
+  const active = parseInt(slide.dataset.activeSpot ?? '-1', 10);
+  cards.forEach((c, i) => c.classList.toggle('active', i === active));
 }
 
 function applyReveal() {
   const slide = slides[current];
-  const bullets = slide.querySelectorAll('.bullets li');
+  const bullets = slide.querySelectorAll('.bullets li, .phones .phone, .trio-cards .trio-card');
   if (slide.dataset.reveal === 'true') {
     bullets.forEach(b => b.classList.remove('revealed'));
   } else {
