@@ -54,6 +54,12 @@
   .bullets li::before{content:'';position:absolute;left:0;top:14px;width:14px;height:2px;background:var(--accent)}
   .bullets li strong{color:var(--accent);font-weight:600}
 
+  /* Modificador: statements — items grandes em sequência, sem dash nem indent */
+  .bullets.statements{gap:36px;max-width:none;width:100%;align-items:center}
+  .bullets.statements li{font-size:clamp(32px,4vw,52px);font-weight:700;letter-spacing:-0.025em;line-height:1.15;padding-left:0;text-align:center;color:var(--text);width:100%;max-width:1100px}
+  .bullets.statements li::before{display:none}
+  .bullets.statements li strong{color:var(--accent);font-weight:700}
+
   /* TIPO: código */
   .slide[data-type="code"] pre{margin:0;background:var(--bg-card)!important;border:1px solid var(--border);border-radius:var(--radius);padding:28px 32px;font-family:'Kode Mono',monospace;font-size:16px;line-height:1.6;overflow:auto;max-height:60vh}
   .slide[data-type="code"] code{font-family:'Kode Mono',monospace!important}
