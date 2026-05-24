@@ -35,6 +35,14 @@ não viram parte do vídeo gravado.
 
 ---
 
+## Ilustrações
+
+Estilo oficial: **Riso Punk** — risografia de duas cores (preto + neon green) sobre creme, granulado, registro propositalmente errado, anti-corporate. Spec completa, prompts e cenas pré-pensadas em [`ilustracoes.md`](./ilustracoes.md).
+
+Quando precisar gerar/sugerir ilustrações para uma aula, consultar esse arquivo antes — paleta, prompt base e cenas já estão prontos.
+
+---
+
 ## Estrutura do template
 
 - `template-apresentacao/deck.css` — estilos compartilhados (não edite ad-hoc, é base de tudo)
