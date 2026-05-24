@@ -25,7 +25,7 @@
   </section>
   <!-- 3 — Quote -->
   <section class="slide" data-type="quote" data-notes="Familiaridade é o vício mais comum do designer. Esse é o ponto da aula.">
-    <blockquote>Sem critério, você vai pro Figma. Por familiaridade, não por escolha.</blockquote>
+    <blockquote>Sem critério a gente abre o Figma. Por familiaridade, não por escolha.</blockquote>
   </section>
 
   <!-- 4 — Os dois extremos -->
@@ -36,7 +36,7 @@
     </div>
     <ul class="bullets revealed">
       <li><strong>Sempre nível 1:</strong> você se contenta com o que dá pra fazer no Figma.</li>
-      <li><strong>Sempre nível 4:</strong> você overengeneera o que era pra ser um esboço.</li>
+      <li><strong>Sempre nível 4:</strong> custo desnecessário de tempo e dinheiro.</li>
       <li><strong>Framework</strong> = critério pra escolher caso a caso.</li>
     </ul>
   </section>
@@ -56,114 +56,177 @@
     </ul>
   </section>
 
-  <!-- 6 — Pergunta 1 -->
-  <section class="slide" data-type="bullets" data-notes="A pergunta mais importante. Define a categoria de problema. Visual e fluxo cabem nos níveis baixos. Comportamento e experiência exigem os altos.">
+  <!-- 5 — Pergunta 1 -->
+  <section class="slide" data-type="bullets" data-reveal="true" data-notes="A pergunta mais importante. Define a categoria de problema. Cada resposta dá um ponto pra um nível.">
     <div class="slide-header">
       <span class="eyebrow">Pergunta 1</span>
       <h2>O que estou <span class="accent">validando?</span></h2>
     </div>
-    <ul class="bullets revealed">
-      <li><strong>Visual</strong> (hierarquia, contraste, marca) → Nível 1</li>
-      <li><strong>Fluxo</strong> (caminho, onboarding, navegação) → Nível 2</li>
-      <li><strong>Comportamento</strong> (interação, motion, feedback) → Nível 3</li>
-      <li><strong>Experiência</strong> (dado real, ponta a ponta, edge case) → Nível 4</li>
+    <ul class="bullets framework-q">
+      <li><span class="q-text">Visual?</span><span class="chips"><span class="lvl-chip">+1 Nível 1</span></span></li>
+      <li><span class="q-text">Fluxo?</span><span class="chips"><span class="lvl-chip">+1 Nível 2</span></span></li>
+      <li><span class="q-text">Comportamento?</span><span class="chips"><span class="lvl-chip">+1 Nível 3</span></span></li>
+      <li><span class="q-text">Experiência?</span><span class="chips"><span class="lvl-chip">+1 Nível 4</span></span></li>
     </ul>
   </section>
 
-  <!-- 7 — Pergunta 2 -->
-  <section class="slide" data-type="bullets" data-notes="Quanto mais 'externo' o público, mais alto o nível precisa estar. Usuário não tolera tela morta.">
+  <!-- 6 — Pergunta 2 -->
+  <section class="slide" data-type="bullets" data-reveal="true" data-notes="Quanto mais 'externo' o público, mais alto o nível precisa estar. Usuário não tolera tela morta.">
     <div class="slide-header">
       <span class="eyebrow">Pergunta 2</span>
       <h2>Quem vai <span class="accent">usar</span> o protótipo?</h2>
     </div>
-    <ul class="bullets revealed">
-      <li><strong>Você mesma</strong> (pra pensar): 1–2</li>
-      <li><strong>Time de produto</strong> (pra alinhar): 2–3</li>
-      <li><strong>Usuário em teste</strong> (pra validar): 3–4</li>
-      <li><strong>Stakeholder cético</strong> (pra convencer): 4 — precisa ver rodar</li>
+    <ul class="bullets framework-q">
+      <li><span class="q-text">Você mesma?</span><span class="chips"><span class="lvl-chip">+1 Nível 1</span></span></li>
+      <li><span class="q-text">Time de produto?</span><span class="chips"><span class="lvl-chip">+1 Nível 2</span></span></li>
+      <li><span class="q-text">Usuário em teste?</span><span class="chips"><span class="lvl-chip">+1 Nível 3</span></span></li>
+      <li><span class="q-text">Stakeholder cético?</span><span class="chips"><span class="lvl-chip">+1 Nível 4</span></span></li>
     </ul>
   </section>
 
-  <!-- 8 — Pergunta 3 -->
-  <section class="slide" data-type="compare" data-notes="Se o dado real muda o desenho, lorem ipsum mente. Você só vê o problema quando o dado bate.">
+  <!-- 7 — Pergunta 3 -->
+  <section class="slide" data-type="bullets" data-reveal="true" data-notes="Se o dado real muda o desenho, lorem ipsum mente. Quanto mais complexo o dado, mais alto o nível.">
     <div class="slide-header">
       <span class="eyebrow">Pergunta 3</span>
-      <h2>O <span class="accent">dado real</span> muda o desenho?</h2>
+      <h2>Quanto o <span class="accent">dado real</span> importa?</h2>
     </div>
-    <div class="compare">
-      <div class="compare-side bad">
-        <span class="tag">● NÃO</span>
-        <h3>Nível 1–2 basta</h3>
-        <p>Telas de marketing, dashboard estático, fluxo de cadastro simples. O lorem ipsum não esconde nada.</p>
-      </div>
-      <div class="compare-side good">
-        <span class="tag">● SIM</span>
-        <h3>Nível 3–4 obrigatório</h3>
-        <p>Listas, filtros, busca, conteúdo gerado por IA, feed, qualquer coisa que muda com o que o usuário fez antes. Sem dado real, você está projetando uma fantasia.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- 9 — Pergunta 4 -->
-  <section class="slide" data-type="bullets" data-notes="Quanto maior o custo de errar, mais alto o nível compensa. O cálculo é simples — só que ninguém faz.">
-    <div class="slide-header">
-      <span class="eyebrow">Pergunta 4</span>
-      <h2>O <span class="accent">erro</span> custa caro?</h2>
-    </div>
-    <ul class="bullets revealed">
-      <li><strong>Erro visual</strong> = revert em 10 minutos → 1–2 basta</li>
-      <li><strong>Erro de fluxo</strong> = retrabalho em sprint → suba pra 3–4</li>
-      <li><strong>Erro em produção</strong> = incidente, suporte, reputação → 4 obrigatório</li>
+    <ul class="bullets framework-q">
+      <li><span class="q-text">Sem dado / lorem ipsum?</span><span class="chips"><span class="lvl-chip">+1 Nível 1</span></span></li>
+      <li><span class="q-text">Dado fixo?</span><span class="chips"><span class="lvl-chip">+1 Nível 2</span></span></li>
+      <li><span class="q-text">Dado dinâmico?</span><span class="chips"><span class="lvl-chip">+1 Nível 3</span></span></li>
+      <li><span class="q-text">Dado real e variável?</span><span class="chips"><span class="lvl-chip">+1 Nível 4</span></span></li>
     </ul>
   </section>
 
-  <!-- 10 — Pergunta 5 -->
-  <section class="slide" data-type="chart" data-notes="Os números viraram. Com IA, nível 4 cabe em 1 dia. Sem IA, era 1 semana. O cálculo do esforço mudou — mas a maioria ainda usa a tabela antiga.">
+  <!-- 8 — Pergunta 4 -->
+  <section class="slide" data-type="bullets" data-reveal="true" data-notes="Quanto maior o custo de errar, mais alto o nível compensa. O cálculo é simples — só que ninguém faz.">
+    <div class="slide-header">
+      <span class="eyebrow">Pergunta 4</span>
+      <h2>Quanto custa <span class="accent">errar?</span></h2>
+    </div>
+    <ul class="bullets framework-q">
+      <li><span class="q-text">Erro irrelevante?</span><span class="chips"><span class="lvl-chip">+1 Nível 1</span></span></li>
+      <li><span class="q-text">Retrabalho de horas?</span><span class="chips"><span class="lvl-chip">+1 Nível 2</span></span></li>
+      <li><span class="q-text">Retrabalho de sprint?</span><span class="chips"><span class="lvl-chip">+1 Nível 3</span></span></li>
+      <li><span class="q-text">Incidente em produção?</span><span class="chips"><span class="lvl-chip">+1 Nível 4</span></span></li>
+    </ul>
+  </section>
+
+  <!-- 9 — Pergunta 5 -->
+  <section class="slide" data-type="bullets" data-reveal="true" data-notes="Com IA o cálculo virou. Nível 4 cabe em 1 dia. Aqui cada resposta soma em mais de um nível porque tempo abre faixas.">
     <div class="slide-header">
       <span class="eyebrow">Pergunta 5</span>
       <h2>Quanto <span class="accent">tempo</span> eu tenho?</h2>
     </div>
-    <div class="chart-wrap">
-      <div class="chart-row"><span class="chart-label">30 min</span><div class="chart-bar"><div class="chart-fill" style="width:18%"></div></div><span class="chart-value">N1</span></div>
-      <div class="chart-row"><span class="chart-label">2 horas</span><div class="chart-bar"><div class="chart-fill" style="width:40%"></div></div><span class="chart-value">N2</span></div>
-      <div class="chart-row"><span class="chart-label">1 dia</span><div class="chart-bar"><div class="chart-fill" style="width:75%"></div></div><span class="chart-value">N3–N4</span></div>
-      <div class="chart-row"><span class="chart-label">1 semana</span><div class="chart-bar"><div class="chart-fill" style="width:98%"></div></div><span class="chart-value">N4 polido</span></div>
-    </div>
-  </section>
-
-  <!-- 11 — Quote: regra simples -->
-  <section class="slide" data-type="quote" data-notes="O atalho que substitui o framework quando não dá tempo de pensar nas 5 perguntas. Custa pouco. Devolve muito.">
-    <blockquote>Quando em dúvida, sobe 1 nível.</blockquote>
-  </section>
-
-  <!-- 12 — Aplicando: 3 casos -->
-  <section class="slide" data-type="bullets" data-notes="Aterriza o framework em casos concretos do dia a dia de design. A turma vai reconhecer todos.">
-    <div class="slide-header">
-      <span class="eyebrow">Aplicando</span>
-      <h2>3 casos <span class="accent">práticos</span></h2>
-    </div>
-    <ul class="bullets revealed">
-      <li><strong>Redesign de empty state</strong> → visual, sem dado real → <span class="accent">Nível 1</span></li>
-      <li><strong>Novo fluxo de onboarding</strong> → comportamento, usuário externo → <span class="accent">Nível 3 ou 4</span></li>
-      <li><strong>Feature de IA</strong> → dado real é central, sem ele não dá pra projetar → <span class="accent">Nível 4 sempre</span></li>
+    <ul class="bullets framework-q">
+      <li><span class="q-text">Menos de 1 dia?</span><span class="chips"><span class="lvl-chip">+1 Nível 1</span><span class="lvl-chip">+1 Nível 2</span></span></li>
+      <li><span class="q-text">Entre 1 dia e 1 semana?</span><span class="chips"><span class="lvl-chip">+1 Nível 3</span><span class="lvl-chip">+1 Nível 4</span></span></li>
+      <li><span class="q-text">Mais de 1 semana?</span><span class="chips"><span class="lvl-chip polish">+1 Nível 4 polido</span></span></li>
     </ul>
   </section>
 
-  <!-- 13 — Hands-on canvas -->
-  <section class="slide" data-type="canvas" data-notes="Pause. Peça um caso real da turma. Aplique as 5 perguntas no quadro. Rabisque junto.">
-    <span class="canvas-label">Hands-on · aplique nas 5 perguntas</span>
-    <div class="canvas-hint">
-      Traga um caso real e rode aqui.
-      <span>Aperta D · 1 pincel · 2 marca-texto · 6 texto</span>
+  <!-- 10 — Caso 1: Redesign de Empty State -->
+  <section class="slide" data-type="case-study" data-notes="Aplica o framework ao vivo. A cada Space: revela uma pergunta+resposta e acende o pip do nível correspondente. Após as 5 perguntas, o próximo Space revela o resultado e destaca o nível vencedor.">
+    <div class="case-grid">
+      <div class="case-main">
+        <div class="slide-header">
+          <span class="eyebrow">Aplicando · caso 1</span>
+          <h2>Redesign de <span class="accent">Empty State</span></h2>
+          <p class="case-context">Atualmente o app tem uma tela genérica de 404. Quero propor pro meu time alguns caminhos pra incluirmos um empty state customizado.</p>
+        </div>
+        <ul class="case-questions">
+          <li data-points-to="1"><span class="q-num">01</span><span class="q-content">O que estou validando? <em>Visual.</em> <span class="q-arrow">→</span> Nível 1</span></li>
+          <li data-points-to="1"><span class="q-num">02</span><span class="q-content">Quem usa? <em>Eu mesma.</em> <span class="q-arrow">→</span> Nível 1</span></li>
+          <li data-points-to="1"><span class="q-num">03</span><span class="q-content">Dado real importa? <em>Sem dado.</em> <span class="q-arrow">→</span> Nível 1</span></li>
+          <li data-points-to="1"><span class="q-num">04</span><span class="q-content">Custo do erro? <em>Irrelevante.</em> <span class="q-arrow">→</span> Nível 1</span></li>
+          <li data-points-to="1,2"><span class="q-num">05</span><span class="q-content">Tempo? <em>Menos de 1 dia.</em> <span class="q-arrow">→</span> Nível 1 + Nível 2</span></li>
+        </ul>
+        <div class="case-result">
+          <div class="result-label">Resultado do framework</div>
+          <div class="result-level">Nível 1 — Estático</div>
+          <div class="result-desc">Figma estático resolve. Não precisa subir a escada — sobe ela quando o problema pedir.</div>
+        </div>
+      </div>
+      <div class="case-scoreboard">
+        <h3>Placar</h3>
+        <div class="level-score" data-level="1"><span class="lvl-name">Nível 1</span><span class="lvl-pips"><span class="pip"></span><span class="pip"></span><span class="pip"></span><span class="pip"></span><span class="pip"></span></span></div>
+        <div class="level-score" data-level="2"><span class="lvl-name">Nível 2</span><span class="lvl-pips"><span class="pip"></span><span class="pip"></span><span class="pip"></span><span class="pip"></span><span class="pip"></span></span></div>
+        <div class="level-score" data-level="3"><span class="lvl-name">Nível 3</span><span class="lvl-pips"><span class="pip"></span><span class="pip"></span><span class="pip"></span><span class="pip"></span><span class="pip"></span></span></div>
+        <div class="level-score" data-level="4"><span class="lvl-name">Nível 4</span><span class="lvl-pips"><span class="pip"></span><span class="pip"></span><span class="pip"></span><span class="pip"></span><span class="pip"></span></span></div>
+      </div>
     </div>
   </section>
 
-  <!-- 14 — Próxima aula -->
-  <section class="slide" data-type="cover" data-notes="Última aula do módulo: cuidados com IA. Depois disso a gente vai pra mão na massa (Módulo 02).">
-    <span class="eyebrow">Próxima aula</span>
-    <h1>Os <span class="accent">3 erros</span><br>com IA</h1>
-    <p class="lead">Cometi todos. Pra você não cometer.</p>
-    
+  <!-- 11 — Caso 2: Novo fluxo de onboarding -->
+  <section class="slide" data-type="case-study" data-notes="Caso médio. Comportamento + usuário externo + dado dinâmico. Resultado: Nível 3 com 4 pontos.">
+    <div class="case-grid">
+      <div class="case-main">
+        <div class="slide-header">
+          <span class="eyebrow">Aplicando · caso 2</span>
+          <h2>Melhoria no fluxo de <span class="accent">onboarding</span></h2>
+          <p class="case-context">O time de negócios trouxe que alguns usuários estão abrindo chamados por não encontrarem duas features que já apresentamos no onboarding. Minha tarefa é investigar se podemos melhorar algo no fluxo atual pra ajudar com isso.</p>
+        </div>
+        <ul class="case-questions">
+          <li data-points-to="2"><span class="q-num">01</span><span class="q-content">O que estou validando? <em>Fluxo.</em> <span class="q-arrow">→</span> Nível 2</span></li>
+          <li data-points-to="3"><span class="q-num">02</span><span class="q-content">Quem usa? <em>Usuário em teste.</em> <span class="q-arrow">→</span> Nível 3</span></li>
+          <li data-points-to="3"><span class="q-num">03</span><span class="q-content">Dado real importa? <em>Dado dinâmico.</em> <span class="q-arrow">→</span> Nível 3</span></li>
+          <li data-points-to="3"><span class="q-num">04</span><span class="q-content">Custo do erro? <em>Retrabalho de sprint.</em> <span class="q-arrow">→</span> Nível 3</span></li>
+          <li data-points-to="3,4"><span class="q-num">05</span><span class="q-content">Tempo? <em>Entre 1 dia e 1 semana.</em> <span class="q-arrow">→</span> Nível 3 + Nível 4</span></li>
+        </ul>
+        <div class="case-result">
+          <div class="result-label">Resultado do framework</div>
+          <div class="result-level">Nível 3 — Interativo</div>
+          <div class="result-desc">Vale subir pra protótipo interativo com Figma Make ou similar. Teste com usuário precisa de resposta de verdade.</div>
+        </div>
+      </div>
+      <div class="case-scoreboard">
+        <h3>Placar</h3>
+        <div class="level-score" data-level="1"><span class="lvl-name">Nível 1</span><span class="lvl-pips"><span class="pip"></span><span class="pip"></span><span class="pip"></span><span class="pip"></span><span class="pip"></span></span></div>
+        <div class="level-score" data-level="2"><span class="lvl-name">Nível 2</span><span class="lvl-pips"><span class="pip"></span><span class="pip"></span><span class="pip"></span><span class="pip"></span><span class="pip"></span></span></div>
+        <div class="level-score" data-level="3"><span class="lvl-name">Nível 3</span><span class="lvl-pips"><span class="pip"></span><span class="pip"></span><span class="pip"></span><span class="pip"></span><span class="pip"></span></span></div>
+        <div class="level-score" data-level="4"><span class="lvl-name">Nível 4</span><span class="lvl-pips"><span class="pip"></span><span class="pip"></span><span class="pip"></span><span class="pip"></span><span class="pip"></span></span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 12 — Caso 3: Feature de IA -->
+  <section class="slide" data-type="case-study" data-notes="O caso extremo. Sem dado real, IA é fantasia. Resultado: Nível 4 com 4 pontos. Fecha a aula.">
+    <div class="case-grid">
+      <div class="case-main">
+        <div class="slide-header">
+          <span class="eyebrow">Aplicando · caso 3</span>
+          <h2>Feature de <span class="accent">IA</span></h2>
+          <p class="case-context">Hoje nosso app quer incluir a capacidade do usuário escrever uma pergunta de forma livre, e será criado um relatório dinâmico pra ele com gráficos e seus dados reais que respondam essa pergunta.</p>
+        </div>
+        <ul class="case-questions">
+          <li data-points-to="4"><span class="q-num">01</span><span class="q-content">O que estou validando? <em>Experiência inteira.</em> <span class="q-arrow">→</span> Nível 4</span></li>
+          <li data-points-to="3"><span class="q-num">02</span><span class="q-content">Quem usa? <em>Usuário em teste.</em> <span class="q-arrow">→</span> Nível 3</span></li>
+          <li data-points-to="4"><span class="q-num">03</span><span class="q-content">Dado real importa? <em>Dado real e variável.</em> <span class="q-arrow">→</span> Nível 4</span></li>
+          <li data-points-to="4"><span class="q-num">04</span><span class="q-content">Custo do erro? <em>Incidente em produção.</em> <span class="q-arrow">→</span> Nível 4</span></li>
+          <li data-points-to="3,4"><span class="q-num">05</span><span class="q-content">Tempo? <em>Entre 1 dia e 1 semana.</em> <span class="q-arrow">→</span> Nível 3 + Nível 4</span></li>
+        </ul>
+        <div class="case-result">
+          <div class="result-label">Resultado do framework</div>
+          <div class="result-level">Nível 4 — Funcional</div>
+          <div class="result-desc">Sem dado real, IA vira fantasia. Tem que rodar de verdade. Esse caso pede o nível mais alto — sempre.</div>
+        </div>
+      </div>
+      <div class="case-scoreboard">
+        <h3>Placar</h3>
+        <div class="level-score" data-level="1"><span class="lvl-name">Nível 1</span><span class="lvl-pips"><span class="pip"></span><span class="pip"></span><span class="pip"></span><span class="pip"></span><span class="pip"></span></span></div>
+        <div class="level-score" data-level="2"><span class="lvl-name">Nível 2</span><span class="lvl-pips"><span class="pip"></span><span class="pip"></span><span class="pip"></span><span class="pip"></span><span class="pip"></span></span></div>
+        <div class="level-score" data-level="3"><span class="lvl-name">Nível 3</span><span class="lvl-pips"><span class="pip"></span><span class="pip"></span><span class="pip"></span><span class="pip"></span><span class="pip"></span></span></div>
+        <div class="level-score" data-level="4"><span class="lvl-name">Nível 4</span><span class="lvl-pips"><span class="pip"></span><span class="pip"></span><span class="pip"></span><span class="pip"></span><span class="pip"></span></span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 13 — Materiais: framework pra levar -->
+  <section class="slide" data-type="cover" data-notes="Slide final. Marca que o aluno leva o framework como ativo. PDF pra imprimir/consultar offline, Markdown pra colar no Notion/Obsidian/wiki.">
+    <span class="eyebrow">Pra você levar</span>
+    <h1>O <span class="accent">framework</span> é seu</h1>
+    <p class="lead">As 5 perguntas em <strong>PDF</strong> e <strong>Markdown</strong> nos materiais desta aula.</p>
+    <div class="module-tag">Use no próximo briefing.</div>
   </section>
 
 </main>

@@ -157,6 +157,10 @@ function goTo(i, opts = {}) {
     slides[current].dataset.activeSpot = direction === 'back' ? String(cardsCount - 1) : '-1';
     updateSpotlight(slides[current]);
   }
+  // Reset case-study ao entrar — zera questions/scoreboard/result
+  if (slides[current].dataset.type === 'case-study') {
+    resetCaseSlide(slides[current]);
+  }
   // Reset quote-reveal ao entrar — frase se vier do anterior, imagem se voltando
   if (slides[current].dataset.type === 'quote-reveal') {
     slides[current].dataset.revealed = direction === 'back' ? 'true' : 'false';
@@ -197,6 +201,21 @@ function next() {
     slide.dataset.revealed = 'true';
     return;
   }
+  if (slide.dataset.type === 'case-study') {
+    const questions = slide.querySelectorAll('.case-questions li');
+    const revealed = slide.querySelectorAll('.case-questions li.revealed').length;
+    const result = slide.querySelector('.case-result');
+    if (revealed < questions.length) {
+      questions[revealed].classList.add('revealed');
+      updateCaseScoreboard(slide);
+      return;
+    }
+    if (result && !result.classList.contains('shown')) {
+      result.classList.add('shown');
+      markCaseLeader(slide);
+      return;
+    }
+  }
   if (slide.dataset.reveal === 'true') {
     const bullets = slide.querySelectorAll('.bullets li, .phones .phone, .trio-cards .trio-card');
     if (revealedBullets < bullets.length) {
@@ -230,7 +249,59 @@ function prev() {
     slide.dataset.revealed = 'false';
     return;
   }
+  if (slide.dataset.type === 'case-study') {
+    const result = slide.querySelector('.case-result');
+    if (result && result.classList.contains('shown')) {
+      result.classList.remove('shown');
+      slide.querySelectorAll('.level-score').forEach(s => s.classList.remove('leader'));
+      return;
+    }
+    const revealed = slide.querySelectorAll('.case-questions li.revealed');
+    if (revealed.length > 0) {
+      revealed[revealed.length - 1].classList.remove('revealed');
+      updateCaseScoreboard(slide);
+      return;
+    }
+  }
   goTo(current - 1);
+}
+
+function resetCaseSlide(slide) {
+  slide.querySelectorAll('.case-questions li.revealed').forEach(q => q.classList.remove('revealed'));
+  slide.querySelectorAll('.level-score').forEach(s => {
+    s.classList.remove('has-points', 'leader');
+    s.querySelectorAll('.pip.filled').forEach(p => p.classList.remove('filled'));
+  });
+  const result = slide.querySelector('.case-result');
+  if (result) result.classList.remove('shown');
+}
+
+function updateCaseScoreboard(slide) {
+  const revealed = slide.querySelectorAll('.case-questions li.revealed');
+  const counts = {};
+  revealed.forEach(q => {
+    const targets = (q.dataset.pointsTo || '').split(',').map(s => s.trim()).filter(Boolean);
+    targets.forEach(t => { counts[t] = (counts[t] || 0) + 1; });
+  });
+  slide.querySelectorAll('.level-score').forEach(s => {
+    const lvl = s.dataset.level;
+    const n = counts[lvl] || 0;
+    const pips = s.querySelectorAll('.pip');
+    pips.forEach((p, i) => p.classList.toggle('filled', i < n));
+    s.classList.toggle('has-points', n > 0);
+  });
+}
+
+function markCaseLeader(slide) {
+  const counts = {};
+  slide.querySelectorAll('.level-score').forEach(s => {
+    counts[s.dataset.level] = s.querySelectorAll('.pip.filled').length;
+  });
+  const max = Math.max(0, ...Object.values(counts));
+  slide.querySelectorAll('.level-score').forEach(s => {
+    const n = counts[s.dataset.level] || 0;
+    s.classList.toggle('leader', max > 0 && n === max);
+  });
 }
 
 function updateTimeline(slide) {

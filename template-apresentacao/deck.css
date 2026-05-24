@@ -68,6 +68,81 @@
   .split-image img{max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;border-radius:var(--radius)}
   .split-image:not(:has(img))::before{content:attr(data-placeholder);display:flex;align-items:center;justify-content:center;width:100%;height:100%;min-height:320px;background:var(--bg-card);border:1px dashed var(--border-light);border-radius:var(--radius);color:var(--text-mute);font-family:'Kode Mono',monospace;font-size:12px;letter-spacing:0.14em;text-transform:uppercase}
 
+  /* Modificador: framework-q — perguntas do framework (texto + chip de nível à direita) */
+  .bullets.framework-q{gap:14px;max-width:980px;width:100%;align-items:stretch}
+  .bullets.framework-q li{
+    display:flex;align-items:center;justify-content:space-between;gap:24px;
+    padding:18px 24px;background:var(--bg-card);border:1px solid var(--border);
+    border-radius:var(--radius);width:100%;max-width:none;padding-left:24px;
+    font-size:22px;color:var(--text);line-height:1.3
+  }
+  .bullets.framework-q li::before{display:none}
+  .bullets.framework-q .q-text{flex:1}
+  .bullets.framework-q .q-text em{color:var(--accent);font-style:normal;font-weight:600}
+  .bullets.framework-q .chips{display:inline-flex;gap:6px;flex-shrink:0}
+  .bullets.framework-q .lvl-chip{
+    display:inline-flex;align-items:center;gap:4px;
+    font-family:'Kode Mono',monospace;font-size:12px;font-weight:600;
+    padding:8px 14px;border-radius:999px;
+    background:var(--accent);color:#1c1c1c;
+    letter-spacing:0.06em;text-transform:uppercase;white-space:nowrap
+  }
+  .bullets.framework-q .lvl-chip.polish{background:transparent;color:var(--accent);border:1px solid var(--accent)}
+
+  /* TIPO: case-study — aplica framework num caso, com placar lateral animado */
+  .slide[data-type="case-study"]{padding:60px 0;justify-content:flex-start;align-items:center}
+  .case-grid{display:grid;grid-template-columns:minmax(0,1fr) 280px;gap:40px;align-items:start;flex:1;min-height:0;height:100%;width:70vw;max-width:1400px;margin:0 auto}
+  .case-context{color:var(--text-dim);font-size:17px;line-height:1.5;margin:6px 0 20px;max-width:760px}
+  .case-main{display:flex;flex-direction:column;min-height:0;justify-content:flex-start}
+  .case-main .slide-header{margin-bottom:20px}
+  .case-questions{list-style:none;display:flex;flex-direction:column;gap:10px;margin:0}
+  .case-questions li{
+    background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);
+    padding:14px 18px;font-size:17px;color:var(--text);line-height:1.4;
+    opacity:0;transform:translateY(8px);transition:opacity .45s ease,transform .45s ease,border-color .45s ease;
+    display:flex;align-items:center;gap:14px
+  }
+  .case-questions li.revealed{opacity:1;transform:translateY(0);border-color:var(--border-light)}
+  .case-questions li .q-num{
+    font-family:'Kode Mono',monospace;font-size:11px;color:var(--text-mute);
+    letter-spacing:0.1em;flex-shrink:0;min-width:24px
+  }
+  .case-questions li.revealed .q-num{color:var(--accent)}
+  .case-questions li .q-content{flex:1}
+  .case-questions li .q-content em{color:var(--accent);font-style:normal;font-weight:600}
+  .case-questions li .q-arrow{color:var(--accent);font-weight:700;margin:0 4px}
+
+  .case-scoreboard{display:flex;flex-direction:column;gap:8px;align-self:stretch}
+  .case-scoreboard h3{
+    font-family:'Kode Mono',monospace;font-size:11px;
+    letter-spacing:0.14em;text-transform:uppercase;color:var(--text-dim);
+    margin-bottom:4px
+  }
+  .level-score{
+    display:flex;align-items:center;justify-content:space-between;gap:12px;
+    padding:12px 16px;background:var(--bg-card);border:1px solid var(--border);
+    border-radius:var(--radius);transition:background .4s ease,border-color .4s ease,color .4s ease
+  }
+  .level-score.has-points{border-color:var(--border-light)}
+  .level-score.leader{background:var(--accent);border-color:var(--accent);color:#1c1c1c}
+  .level-score .lvl-name{font-weight:600;font-size:14px}
+  .level-score .lvl-pips{display:flex;gap:4px}
+  .level-score .pip{width:9px;height:9px;border-radius:50%;background:var(--bg-elev);transition:all .4s cubic-bezier(.34,1.56,.64,1)}
+  .level-score .pip.filled{background:var(--accent);box-shadow:0 0 10px rgba(212,245,66,0.7)}
+  .level-score.leader .pip{background:rgba(28,28,28,0.25)}
+  .level-score.leader .pip.filled{background:#1c1c1c;box-shadow:none}
+
+  .case-result{
+    margin-top:20px;padding:20px 24px;background:var(--bg-card);
+    border:1px solid var(--border);border-radius:var(--radius);
+    opacity:0;transform:translateY(8px);transition:opacity .45s ease,transform .45s ease,border-color .45s ease;
+    pointer-events:none
+  }
+  .case-result.shown{opacity:1;transform:translateY(0);border-color:var(--accent);pointer-events:auto}
+  .case-result .result-label{font-family:'Kode Mono',monospace;font-size:11px;color:var(--text-dim);letter-spacing:0.14em;text-transform:uppercase}
+  .case-result .result-level{font-size:28px;font-weight:700;color:var(--accent);margin-top:6px;letter-spacing:-0.02em}
+  .case-result .result-desc{font-size:14px;color:var(--text-dim);margin-top:6px;line-height:1.5}
+
   /* Modificador: levels — cada item vira card claro com peso menor que o título */
   .bullets.levels{gap:16px;max-width:920px;width:100%;align-items:stretch}
   .bullets.levels li{
